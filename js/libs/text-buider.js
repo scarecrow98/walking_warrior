@@ -1,21 +1,27 @@
 class TextBuilder {
 
-    constructor(text, phaser) {
+    constructor(phaser) {
         this.phaser = phaser
-        this.text = text
         this.textStyle = {
             font: '50px Forte',
             fill: '#FCB514',
             align: 'left'
-        }
+        },
+        this.lineHeight = 40
+        this.rowCount = 0
     }
 
     setTextStyle(style) {
         this.textStyle = style;
     }
 
-    writeLine(x, y, text) {
-        phaser.game.add.text(x, y, text, this.textStyle)
+    setLineHeight(lineHeight) {
+        this.lineHeight = lineHeight
+    }
+
+    writeLine(text, leftPadding = 10) {
+        this.phaser.game.add.text(leftPadding, this.rowCount * this.lineHeight, text, this.textStyle)
+        rowCount++
     }
 
 }
