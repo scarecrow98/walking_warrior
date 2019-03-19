@@ -2,21 +2,21 @@
 // Initialize the session
 session_start();
 
-require_once "config.php";
+// require_once "config.php";
  
 // Check if the user is logged in, if not then redirect him to login page
-if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
-    $sessionid = $_SESSION['id'];
+// if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
+//     $sessionid = $_SESSION['id'];
 
-    $issetuser = mysqli_query($link, "SELECT `id` FROM `users` WHERE `id` = $sessionid");
-    if(mysqli_num_rows($issetuser) == 0) { //valós felhasználó
-        header("location: login.php");
-        exit;
-    }
-} else {
-    header("location: login.php");
-    exit;
-}
+//     $issetuser = mysqli_query($link, "SELECT `id` FROM `users` WHERE `id` = $sessionid");
+//     if(mysqli_num_rows($issetuser) == 0) { //valós felhasználó
+//         header("location: login.php");
+//         exit;
+//     }
+// } else {
+//     header("location: login.php");
+//     exit;
+// }
 ?>
 
 <!doctype html> 
@@ -30,6 +30,12 @@ if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
 	<script type="text/javascript" src="js/steps.js"></script>
 	<script type="text/javascript" src="js/preload.js"></script>
 	<script type="text/javascript" src="js/gametitle.js"></script>
+
+    <!-- here comes self made classes -->
+    <script type="text/javascript" src="js/libs/text-builder.js"></script>
+    <script type="text/javascript" src="js/libs/line-builder.js"></script>
+    <!-- classes end -->
+
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript" src="js/gameover.js"></script>
         <script type="text/javascript" src="js/info.js"></script>
