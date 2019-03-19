@@ -1,6 +1,8 @@
 class TextBuilder {
 
-    constructor(phaser) {
+    constructor(text, phaser) {
+        this.text = text
+        this.lineBuilder = new LineBuilder()
         this.phaser = phaser
         this.textStyle = {
             font: '50px Forte',
@@ -9,6 +11,19 @@ class TextBuilder {
         },
         this.lineHeight = 40
         this.rowCount = 0
+    }
+
+    writeText() {
+        let words = this.text.split(' ')
+        
+        for (let word of words) {
+            if (this.lineBuilder.wordFits(word) && word.slice(-1) != '\n') {
+                this.lineBuilder.pushWord(word)
+            } else {
+                let line = this.lineBuilder.createLine()
+                this.writeLine(line)
+            }
+        }
     }
 
     setTextStyle(style) {
