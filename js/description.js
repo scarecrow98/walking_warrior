@@ -20,7 +20,7 @@ Description.prototype = {
 
     console.log();
 
-    textBuilder = new TextBuilder(descriptionText, this)
+    textBuilder = new TextBuilder(game, descriptionText)
     textBuilder.writeText()
 
     button = game.add.button(1230, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
@@ -29,5 +29,6 @@ Description.prototype = {
     function actionOnClick2 () {
       //title.destroy();
     this.game.state.start("GameTitle");
+    }
   }
 }

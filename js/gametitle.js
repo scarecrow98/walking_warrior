@@ -3,30 +3,24 @@ var GameTitle = function(game) {};
 GameTitle.prototype = {
 
     create: function() {
-        var me = this;
         // title = game.add.audio('title');
         // game.sound.setDecodedCallback(title, start, this);
 
         // function start() {
             // title.loopFull(0.6);
         // }
-        background = game.add.tileSprite(0, 0, 1400, 1920, "background");
-        var text = "Walking Warrior";
-        var tex3 = "v1.4";
-		var tex4 = "20.02.2019";
-        var style = {
-            font: "180px Forte",
-            fill: "#ffc61e",
-            align: "center"
-        };
-        var style2 = {
-            font: "70px Forte",
-            fill: "#ffc61e",
-            align: "center"
-        };
-        var t = this.game.add.text(80, 60, text, style);
-        var t2 = this.game.add.text(50, 1840, tex3, style2);
-		var t2 = this.game.add.text(1000, 1840, tex4, style2);
+        game.add.tileSprite(0, 0, 1400, 1920, "background")
+        tBuilder = new TextBuilder(game, null)
+
+        tBuilder.setTextStyle( {font: "180px Forte",fill: "#ffc61e", align: "center"} )
+        tBuilder.writeLineToPos(50,50,"Walking Warrior")
+
+        tBuilder.setTextStyle( {font: "70px Forte",fill: "#ffc61e"} )
+        tBuilder.writeLineToPos(40,1820,"v1.4")
+        tBuilder.writeLineToPos(1080,1820,"20.02.2019")
+
+       
+
         button = game.add.button(460, 300, 'playbutton', actionOnClick, this, 2, 1, 0);
         button.scale.setTo(0.91, 0.91);
 
