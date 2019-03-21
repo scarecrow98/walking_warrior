@@ -9,19 +9,27 @@ class TextBuilder {
             fill: '#FCB514',
             align: 'left'
         },
-        this.lineHeight = 40
+        this.lineHeight = 100
         this.rowCount = 0
+        this.padding = 30
     }
 
     writeText() {
         let words = this.text.split(' ')
-        
+
         for (let word of words) {
-            if (this.lineBuilder.wordFits(word) && word.slice(-1) != '\n') {
+            console.log(word)
+
+            if (this.lineBuilder.wordFits(word) && !word.match(/\r|\n|\r\n/g)) {
                 this.lineBuilder.pushWord(word)
             } else {
+                let splitByNewLine = word.split(/\r|\n|\r\n/)
+                
+                this.lineBuilder.pushWord(splitByNewLine.length > 1 ? splitByNewLine[0] : '')
                 let line = this.lineBuilder.createLine()
                 this.writeLine(line)
+
+                this.lineBuilder.pushWord(splitByNewLine.length > 1 ? splitByNewLine[1] : word)
             }
         }
     }
@@ -30,13 +38,17 @@ class TextBuilder {
         this.textStyle = style;
     }
 
+    setPadding(padding) {
+        this.padding = padding
+    } 
+
     setLineHeight(lineHeight) {
         this.lineHeight = lineHeight
     }
 
-    writeLine(text, leftPadding = 10) {
-        this.phaser.game.add.text(leftPadding, this.rowCount * this.lineHeight, text, this.textStyle)
-        rowCount++
+    writeLine(text) {
+        this.phaser.game.add.text(this.padding, this.rowCount * this.lineHeight + this.padding, text, this.textStyle)
+        this.rowCount++
     }
 
 }
