@@ -7,7 +7,6 @@ class TextBuilder {
         this.textStyle = {
             font: '50px Forte',
             fill: '#FCB514',
-            align: 'left'
         },
         this.lineHeight = 100
         this.topOffset = 0

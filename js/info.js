@@ -3,24 +3,26 @@ var Info = function(game) {};
 Info.prototype = {
 
     create: function() {
-        var me = this;
+        
         background = game.add.tileSprite(0, 0, 1400, 1920, "background");
-        var text = "Select Level";
-        var text2 = "Practice Levels";
-        var text3 = "Token Levels";
-        var style = {
-            font: "110px Forte",
-            fill: "#ffc61e",
-            align: "center"
-        };
-        var style2 = {
-            font: "60px Forte",
-            fill: "#ffc61e",
-            align: "center"
-        };
-        var t = this.game.add.text(420, 80, text, style);
-        var t2 = this.game.add.text(30, 470, text2, style2);
-        var t3 = this.game.add.text(30, 1200, text3, style2);
+
+        tBuilder = new TextBuilder(game, null)
+        bBuilder = new ButtonBuilder(game, this)
+
+        tBuilder.setTextStyle( {font: "110px Forte", fill: "#ffc61e"} )
+        tBuilder.writeLineToPos(450,50,"Select Level")
+
+        tBuilder.setTextStyle( {font: "60px Forte", fill: "#ffc61e"} )
+        tBuilder.writeLineToPos(50,470,"Practice Levels")
+        tBuilder.writeLineToPos(50,1200,"Token Levels")
+        
+
+
+
+
+
+
+
         button = game.add.button(1230, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
         button.scale.setTo(0.8, 0.8);
         sandboxbutton = game.add.button(100, 260, 'sandbox', actionOnClick3, this, 2, 1, 0);
@@ -71,7 +73,7 @@ Info.prototype = {
         //    button.onInputOver.add(over, this);
         //    button.onInputOut.add(out, this);
         //    button.onInputUp.add(up, this);
-        function actionOnClick2() {
+        /*function actionOnClick2() {
             //title.destroy();
             this.game.state.start("GameTitle");
 
@@ -242,7 +244,7 @@ Info.prototype = {
             replays = 3;
             this.game.state.start("Level23");
 
-        }
+        }*/
 
     }
 }

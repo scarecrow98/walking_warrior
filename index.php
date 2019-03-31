@@ -34,6 +34,7 @@ session_start();
     <!-- here comes self made classes -->
     <script type="text/javascript" src="js/libs/text-builder.js"></script>
     <script type="text/javascript" src="js/libs/line-builder.js"></script>
+    <script type="text/javascript" src="js/libs/button-builder.js"></script>
     <!-- classes end -->
 
 	<script type="text/javascript" src="js/main.js"></script>
