@@ -82,8 +82,8 @@ Level9.prototype = {
             me.random = new Phaser.RandomDataGenerator([seed]);
 
             //Set up some initial tiles and the score label
-            //title = game.add.audio('game');
-            //game.sound.setDecodedCallback(title, start, this);
+            title = game.add.audio('game');
+            game.sound.setDecodedCallback(title, start, this);
             small1 = game.add.button(206, 1800, '1', actionOnClic, this, 2, 1, 0);
             small1.scale.setTo(0.45, 0.45);
             small2 = game.add.button(435, 1800, '2', actionOnClic, this, 2, 1, 0);

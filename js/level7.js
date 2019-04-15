@@ -78,12 +78,12 @@ Level7.prototype = {
             me.random = new Phaser.RandomDataGenerator([seed]);
 
             //Set up some initial tiles and the score label
-            /*itle = game.add.audio('game');
+            title = game.add.audio('game');
             game.sound.setDecodedCallback(title, start, this);
 
             function start() {
                 title.loopFull(0.8);
-            }*/
+            }
 
             me.initTiles();
             me.createScore();
