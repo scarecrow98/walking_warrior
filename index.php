@@ -19,11 +19,13 @@ session_start();
 // }
 ?>
 
-<!doctype html> 
+<!DOCTYPE html>
 <html lang="en"> 
 <head> 
-	<meta charset="UTF-8" />
+	<meta charset="UTF-8">
 	<title>Walking Warrior</title>
+    <link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
+
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/phaser.min.js"></script>
 	<script type="text/javascript" src="js/boot.js"></script>
@@ -71,6 +73,7 @@ session_start();
     <style type="text/css">
         body {
             margin: 0;
+            font-family: 'Acme', sans-serif;
         }
     </style>
     <script type="text/javascript">

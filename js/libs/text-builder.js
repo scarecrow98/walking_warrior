@@ -5,7 +5,7 @@ class TextBuilder {
         this.text = text
         this.lineBuilder = new LineBuilder()
         this.textStyle = {
-            font: '50px Forte',
+            font: '50px Acme',
             fill: '#FCB514',
         },
         this.lineHeight = 100
@@ -17,7 +17,6 @@ class TextBuilder {
         let words = this.text.split(' ')
 
         for (let word of words) {
-            console.log(word)
             var splitted = 0
 
             if (this.lineBuilder.wordFits(word) && !word.match(/\r|\n|\r\n/g)) {

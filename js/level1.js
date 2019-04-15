@@ -31,7 +31,7 @@ Level1.prototype = {
 
 		//Keep track of the users score
                 s=1;
-                if(!replays){
+                if(typeof replays == 'undefined'){
                 replays = -1;
             }
 		me.score = 0;

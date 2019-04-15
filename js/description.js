@@ -18,17 +18,13 @@ Description.prototype = {
   create: function () {
     game.add.tileSprite(0, 0, 1400, 1920, "background");
 
-    console.log();
+    let tBuilder = new TextBuilder(game, descriptionText)
+    let bBuilder = new ButtonBuilder(game, this)
 
-    textBuilder = new TextBuilder(game, descriptionText)
-    textBuilder.writeText()
+    tBuilder.writeText()
 
-    button = game.add.button(1230, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-    button.scale.setTo(0.8,0.8);
-
-    function actionOnClick2 () {
-      //title.destroy();
-    this.game.state.start("GameTitle");
-    }
+    bBuilder.createButton(1200, 1750, 'backbutton', function() {
+      this.game.state.start("GameTitle")
+    })
   }
 }
