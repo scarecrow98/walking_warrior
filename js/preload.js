@@ -59,6 +59,17 @@ Preload.prototype = {
                 this.game.load.audio('title', 'assets/title.mp3');
                 this.game.load.audio('game', 'assets/game.mp3');
                 this.game.load.spritesheet('step', 'assets/step.png')
+                
+                this.game.load.spritesheet('instruction1', 'assets/instruction1.png', 1200, 1175)
+                this.game.load.spritesheet('instruction2', 'assets/instruction2.png', 1200, 1175)
+                this.game.load.spritesheet('instruction3', 'assets/instruction3.png', 1200, 1179)
+                this.game.load.spritesheet('instruction4', 'assets/instruction4.png', 1200, 1179)
+                this.game.load.spritesheet('instruction5', 'assets/instruction5.png', 1200, 1184)
+                this.game.load.spritesheet('instruction6', 'assets/instruction6.png', 1200, 1192)
+                this.game.load.spritesheet('instruction7', 'assets/instruction7.png', 1200, 1185)
+                this.game.load.spritesheet('instruction8', 'assets/instruction8.png', 1200, 1175)
+                this.game.load.spritesheet('homebutton', 'assets/homebutton.png')
+                this.game.load.spritesheet('nextbutton', 'assets/next.png')
 	},
 
 	create: function(){

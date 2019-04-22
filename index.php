@@ -4,7 +4,7 @@ session_start();
 
 // require_once "config.php";
  
-// Check if the user is logged in, if not then redirect him to login page
+// // Check if the user is logged in, if not then redirect him to login page
 // if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
 //     $sessionid = $_SESSION['id'];
 
@@ -32,6 +32,15 @@ session_start();
 	<script type="text/javascript" src="js/steps.js"></script>
 	<script type="text/javascript" src="js/preload.js"></script>
 	<script type="text/javascript" src="js/gametitle.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction1.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction2.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction3.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction4.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction5.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction6.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction7.js"></script>
+	<script type="text/javascript" src="js/instructions/instruction8.js"></script>
 
     <!-- here comes self made classes -->
     <script type="text/javascript" src="js/libs/text-builder.js"></script>
@@ -116,6 +125,15 @@ session_start();
                                 game.state.add("Level23", Level23);
                                 game.state.add("NextLevelStep", NextLevelStep);
                                 game.state.add("Counter", Counter);
+                                game.state.add("Instruction", Instruction)
+                                game.state.add("Instruction1", Instruction1)
+                                game.state.add("Instruction2", Instruction2)
+                                game.state.add("Instruction3", Instruction3)
+                                game.state.add("Instruction4", Instruction4)
+                                game.state.add("Instruction5", Instruction5)
+                                game.state.add("Instruction6", Instruction6)
+                                game.state.add("Instruction7", Instruction7)
+                                game.state.add("Instruction8", Instruction8)
 				//Start the first state
 				game.state.start("Boot");
 

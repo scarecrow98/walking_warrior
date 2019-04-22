@@ -16,8 +16,9 @@ GameTitle.prototype = {
         tBuilder.writeLineToPos(50,50,"Walking Warrior")
 
         tBuilder.setTextStyle( {font: "70px Acme",fill: "#ffc61e"} )
-        tBuilder.writeLineToPos(40,1820,"v1.4")
-        tBuilder.writeLineToPos(1040,1820,"20.02.2019")
+        tBuilder.writeLineToPos(40,1820,"v1.5")
+        //should use month/day/year
+        tBuilder.writeLineToPos(1000,1820,"April 17, 2019")
 
        
 
@@ -31,7 +32,8 @@ GameTitle.prototype = {
         //    button.onInputUp.add(up, this);
 
         infobutton = game.add.button(442, 750, 'infobutton', function() {
-            this.game.state.start("Description");
+            // this.game.state.start("Description");
+            this.game.state.start("Instruction1");
         }, this, 2, 1, 0);
 
         selectbutton = game.add.button(442, 1100, 'selectbutton', function() {
