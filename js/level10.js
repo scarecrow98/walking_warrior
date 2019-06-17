@@ -18,15 +18,15 @@ Level10.prototype = {
 			//Declare assets that will be used as tiles
 			me.tileTypes = [
 				'1', //nervecell
-				'2',//neutrophil
+				'2', //neutrophil
 				'3', //platelet
-				'4',//redbloodcell
-				'5',//stemcell
-				'6',//whitebloodcell
+				'4', //redbloodcell
+				'5', //stemcell
+				'6', //whitebloodcell
 				'7', //bnerve
-				'8',//bneutro
-				'9',//bplat
-				'10',//bredb
+				'8', //bneutro
+				'9', //bplat
+				'10', //bredb
 				'11', //bstemc
 				'12', //bwhiteblood
 				'13', // nomatch
@@ -83,12 +83,12 @@ Level10.prototype = {
 			me.random = new Phaser.RandomDataGenerator([seed]);
 
 			//Set up some initial tiles and the score label
-            title = game.add.audio('game');
-            game.sound.setDecodedCallback(title, start, this);
+			title = game.add.audio('game');
+			game.sound.setDecodedCallback(title, start, this);
 
-            function start() {
-                title.loopFull(0.8);
-            }
+			function start() {
+				title.loopFull(0.8);
+			}
 
 			me.initTiles();
 			me.createScore();
@@ -111,18 +111,18 @@ Level10.prototype = {
 		if (me.bonuscount >= 3 && me.lortcount >= 3) {
 			replays = me.replays;
 			$.post("../ajax.php", {
-                 type: 'minustokens'
-            });
+				type: 'minustokens'
+			});
 
-            $.post("../ajax.php", {
-                type: 'updatescore',
-                score: me.score
-            });
+			$.post("../ajax.php", {
+				type: 'updatescore',
+				score: me.score
+			});
 
-            $.post("../ajax.php", {
-                type: 'highestlevel',
-                gamelevel: 10
-            });
+			$.post("../ajax.php", {
+				type: 'highestlevel',
+				gamelevel: 10
+			});
 
 			this.game.state.start("NextLevel");
 		}
@@ -138,7 +138,7 @@ Level10.prototype = {
 			this.game.state.start("GameOver");
 		}
 
-		if (me.moves <= 0) {  //restart part
+		if (me.moves <= 0) { //restart part
 			var me = this;
 
 			me.incrementPlays();
@@ -156,7 +156,6 @@ Level10.prototype = {
 					me.tiles.remove(tile);
 
 
-
 					//Remove the tile from the theoretical grid
 					if (tilePos.x != -1 && tilePos.y != -1) {
 						me.tileGrid[tilePos.x][tilePos.y] = null;
@@ -165,12 +164,7 @@ Level10.prototype = {
 			}
 
 
-
-
-
-
 			me.text3Label.text = "Out of Moves - Restarting";
-
 
 
 			me.wasmove = false;
@@ -349,8 +343,6 @@ Level10.prototype = {
 			var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
 
 
-
-
 			//                    if (me.count==10){
 			//                        var tileToAdd = me.tileTypes[12];
 			//                        me.count+=1;
@@ -401,7 +393,9 @@ Level10.prototype = {
 		var tile = me.tiles.create((x * me.tileWidth) + me.tileWidth / 2, 0, tileToAdd);
 
 		//Animate the tile into the correct vertical position
-		me.game.add.tween(tile).to({ y: y * me.tileHeight + (me.tileHeight / 2) }, 300, Phaser.Easing.Linear.In, true)
+		me.game.add.tween(tile).to({
+			y: y * me.tileHeight + (me.tileHeight / 2)
+		}, 300, Phaser.Easing.Linear.In, true)
 
 		//Set the tiles anchor point to the center
 		tile.anchor.setTo(0.5, 0.5);
@@ -472,8 +466,6 @@ Level10.prototype = {
 				}
 
 
-
-
 				me.resetTile();
 
 				me.fillTile(0);
@@ -484,16 +476,28 @@ Level10.prototype = {
 				return;
 			}
 
-			var tile1Pos = { x: (me.activeTile1.x - me.tileWidth / 2) / me.tileWidth, y: (me.activeTile1.y - me.tileHeight / 2) / me.tileHeight };
-			var tile2Pos = { x: (me.activeTile2.x - me.tileWidth / 2) / me.tileWidth, y: (me.activeTile2.y - me.tileHeight / 2) / me.tileHeight };
+			var tile1Pos = {
+				x: (me.activeTile1.x - me.tileWidth / 2) / me.tileWidth,
+				y: (me.activeTile1.y - me.tileHeight / 2) / me.tileHeight
+			};
+			var tile2Pos = {
+				x: (me.activeTile2.x - me.tileWidth / 2) / me.tileWidth,
+				y: (me.activeTile2.y - me.tileHeight / 2) / me.tileHeight
+			};
 
 			//Swap them in our "theoretical" grid
 			me.tileGrid[tile1Pos.x][tile1Pos.y] = me.activeTile2;
 			me.tileGrid[tile2Pos.x][tile2Pos.y] = me.activeTile1;
 
 			//Actually move them on the screen
-			me.game.add.tween(me.activeTile1).to({ x: tile2Pos.x * me.tileWidth + (me.tileWidth / 2), y: tile2Pos.y * me.tileHeight + (me.tileHeight / 2) }, 100, Phaser.Easing.Linear.In, true);
-			me.game.add.tween(me.activeTile2).to({ x: tile1Pos.x * me.tileWidth + (me.tileWidth / 2), y: tile1Pos.y * me.tileHeight + (me.tileHeight / 2) }, 100, Phaser.Easing.Linear.In, true);
+			me.game.add.tween(me.activeTile1).to({
+				x: tile2Pos.x * me.tileWidth + (me.tileWidth / 2),
+				y: tile2Pos.y * me.tileHeight + (me.tileHeight / 2)
+			}, 100, Phaser.Easing.Linear.In, true);
+			me.game.add.tween(me.activeTile2).to({
+				x: tile1Pos.x * me.tileWidth + (me.tileWidth / 2),
+				y: tile1Pos.y * me.tileHeight + (me.tileHeight / 2)
+			}, 100, Phaser.Easing.Linear.In, true);
 
 			me.activeTile1 = me.tileGrid[tile1Pos.x][tile1Pos.y];
 			me.activeTile2 = me.tileGrid[tile2Pos.x][tile2Pos.y];
@@ -535,9 +539,7 @@ Level10.prototype = {
 				me.checkMatch();
 			});
 
-		}
-
-		else {
+		} else {
 
 			//No match so just swap the tiles back to their original position and reset
 			if (me.switches == false && me.lort == false) {
@@ -684,7 +686,6 @@ Level10.prototype = {
 							matches.push(groups);
 							groups = [];
 							console.log("LLLLLLLiba");
-
 
 
 							break;
@@ -1013,7 +1014,9 @@ Level10.prototype = {
 			// This below will not work on non square tile grids!
 			//var tempArr = tileGrid[j];
 			// Use something from here instead: https://stackoverflow.com/questions/7848004/get-column-from-a-two-dimensional-array-in-javascript
-			var tempArr = tileGrid.map(function (value, index) { return value[j]; });
+			var tempArr = tileGrid.map(function (value, index) {
+				return value[j];
+			});
 			groups = [];
 			for (i = 0; i < tempArr.length; i++) {
 				if (i < tempArr.length - 2)
@@ -1193,7 +1196,6 @@ Level10.prototype = {
 				me.tiles.remove(tile);
 
 
-
 				//Remove the tile from the theoretical grid
 				if (tilePos.x != -1 && tilePos.y != -1) {
 					me.tileGrid[tilePos.x][tilePos.y] = null;
@@ -1208,7 +1210,10 @@ Level10.prototype = {
 	},
 
 	getTilePos: function (tileGrid, tile) {
-		var pos = { x: -1, y: -1 };
+		var pos = {
+			x: -1,
+			y: -1
+		};
 
 		//Find the position of a specific tile in the grid
 		for (var i = 0; i < tileGrid.length; i++) {
@@ -1242,7 +1247,9 @@ Level10.prototype = {
 					me.tileGrid[i][j] = tempTile;
 					me.tileGrid[i][j - 1] = null;
 
-					me.game.add.tween(tempTile).to({ y: (me.tileHeight * j) + (me.tileHeight / 2) }, 100, Phaser.Easing.Linear.In, true);
+					me.game.add.tween(tempTile).to({
+						y: (me.tileHeight * j) + (me.tileHeight / 2)
+					}, 100, Phaser.Easing.Linear.In, true);
 
 					//The positions have changed so start this process again from the bottom
 					//NOTE: This is not set to me.tileGrid[i].length - 1 because it will immediately be decremented as
@@ -1282,7 +1289,10 @@ Level10.prototype = {
 		var me = this;
 		var scoreFont = "100px Arial";
 
-		me.scoreLabel = me.game.add.text(950, 1780, "0", { font: scoreFont, fill: "#ff2800" });
+		me.scoreLabel = me.game.add.text(950, 1780, "0", {
+			font: scoreFont,
+			fill: "#ff2800"
+		});
 		me.scoreLabel.anchor.setTo(0, 0);
 		me.scoreLabel.align = 'center';
 		me.scoreLabel.text = "Score:" + me.score;
@@ -1294,18 +1304,27 @@ Level10.prototype = {
 		var scoreFont = "100px Arial";
 		var textFont = "36px Arial";
 		var tFont = "53px Arial";
-		me.textLabel = me.game.add.text(1230, 80, "0", { font: textFont, fill: "#ff2800" });
+		me.textLabel = me.game.add.text(1230, 80, "0", {
+			font: textFont,
+			fill: "#ff2800"
+		});
 		me.textLabel.text = "Moves left:";
-		me.movesLabel = me.game.add.text(1230, 120, "0", { font: scoreFont, fill: "#ff2800" });
+		me.movesLabel = me.game.add.text(1230, 120, "0", {
+			font: scoreFont,
+			fill: "#ff2800"
+		});
 		me.movesLabel.anchor.setTo(0, 0);
 		me.movesLabel.align = 'center';
 		me.movesLabel.text = me.moves;
-		me.text3Label = me.game.add.text(5, 1800, "", { font: tFont, fill: "#ff2800" });
+		me.text3Label = me.game.add.text(5, 1800, "", {
+			font: tFont,
+			fill: "#ff2800"
+		});
 		me.textLabel2 = me.game.add.text(1230, 580, "0", {
-            font: textFont,
-            fill: "#ff2800"
-        });
-        me.textLabel2.text = "Level: 10";
+			font: textFont,
+			fill: "#ff2800"
+		});
+		me.textLabel2.text = "Level: 10";
 	},
 
 	createReplays: function () {
@@ -1313,9 +1332,15 @@ Level10.prototype = {
 		var me = this;
 		var scoreFont = "100px Arial";
 		var textFont = "36px Arial";
-		me.text2Label = me.game.add.text(1220, 250, "0", { font: textFont, fill: "#ff2800" });
+		me.text2Label = me.game.add.text(1220, 250, "0", {
+			font: textFont,
+			fill: "#ff2800"
+		});
 		me.text2Label.text = "Tokens left:";
-		me.playsLabel = me.game.add.text(1230, 290, "0", { font: scoreFont, fill: "#ff2800" });
+		me.playsLabel = me.game.add.text(1230, 290, "0", {
+			font: scoreFont,
+			fill: "#ff2800"
+		});
 		me.playsLabel.anchor.setTo(0, 0);
 		me.playsLabel.align = 'center';
 		me.playsLabel.text = me.replays;
@@ -1327,10 +1352,12 @@ Level10.prototype = {
 		var me = this;
 		me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.32, 0.32);
+
 		function switchOnClick() {
 			me.switches = true;
 			me.switch = game.add.button(1230, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.32, 0.32);
+
 			function switchOnClick2() {
 				me.switches = false;
 				me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
@@ -1339,12 +1366,12 @@ Level10.prototype = {
 		}
 
 		button = game.add.button(1230, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-        button.scale.setTo(0.8,0.8);
+		button.scale.setTo(0.8, 0.8);
 
-        function actionOnClick2 () {
-            //title.destroy();
-        this.game.state.start("GameTitle");
-        }
+		function actionOnClick2() {
+			//title.destroy();
+			this.game.state.start("GameTitle");
+		}
 
 
 	},
@@ -1354,10 +1381,12 @@ Level10.prototype = {
 		var me = this;
 		me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.12, 0.12);
+
 		function switchOnClick() {
 			me.delete = true;
 			me.switch = game.add.button(1230, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.192, 0.192);
+
 			function switchOnClick2() {
 				me.delete = false;
 				me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
@@ -1367,7 +1396,6 @@ Level10.prototype = {
 
 
 	},
-
 
 
 	incrementScore: function (tempArr) {

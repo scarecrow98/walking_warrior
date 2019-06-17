@@ -91,6 +91,10 @@ Level9.prototype = {
             small3 = game.add.button(672, 1800, '3', actionOnClic, this, 2, 1, 0);
             small3.scale.setTo(0.45, 0.45);
 
+            function start() {
+                title.loopFull(0.8);
+            }
+
             function actionOnClic() {
 
 
