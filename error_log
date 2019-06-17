@@ -147,3 +147,12 @@
 [21-Feb-2019 08:38:42 UTC] PHP Parse error:  syntax error, unexpected '}', expecting ',' or ';' in /home/walkingw/public_html/register.php on line 83
 [21-Feb-2019 08:44:36 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/walkingw/public_html/register.php:82) in /home/walkingw/public_html/register.php on line 83
 [21-Feb-2019 09:03:25 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/walkingw/public_html/register.php:82) in /home/walkingw/public_html/register.php on line 83
+[22-May-2019 14:03:39 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:04:00 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:04:12 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:05:09 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:05:18 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:05:20 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:05:46 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:06:17 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43
+[22-May-2019 14:06:31 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/walkingw/test.walkingwarrior.hu/gateway.php on line 43

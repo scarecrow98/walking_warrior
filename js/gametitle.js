@@ -16,35 +16,38 @@ GameTitle.prototype = {
         tBuilder.writeLineToPos(50,50,"Walking Warrior")
 
         tBuilder.setTextStyle( {font: "70px Acme",fill: "#ffc61e"} )
-        tBuilder.writeLineToPos(40,1820,"v1.5")
+        tBuilder.writeLineToPos(40,1820,"v2.0")
         //should use month/day/year
-        tBuilder.writeLineToPos(1000,1820,"April 17, 2019")
+        tBuilder.writeLineToPos(1000,1820,"June 14, 2019")
 
        
 
-        button = game.add.button(460, 300, 'playbutton', function() {
+
+        button = game.add.button(80, 400, 'playbutton', function() {
             this.startGame();
         }, this, 2, 1, 0);
-        button.scale.setTo(0.91, 0.91);
+        button.scale.setTo(1.2, 1.2);
 
         //    button.onInputOver.add(over, this);
         //    button.onInputOut.add(out, this);
         //    button.onInputUp.add(up, this);
 
-        infobutton = game.add.button(442, 750, 'infobutton', function() {
+        infobutton = game.add.button(700, 400, 'infobutton', function() {
             // this.game.state.start("Description");
             this.game.state.start("Instruction1");
         }, this, 2, 1, 0);
+        infobutton.scale.setTo(1.2, 1.2);
 
-        selectbutton = game.add.button(442, 1100, 'selectbutton', function() {
+        selectbutton = game.add.button(70, 1100, 'selectbutton', function() {
             this.game.state.start("Info");
         }, this, 2, 1, 0);
+        selectbutton.scale.setTo(1.2, 1.2);
 
 
-        stepbutton = game.add.button(600, 1550, 'step', function() {
+        stepbutton = game.add.button(900, 1200, 'step', function() {
             this.game.state.start("Counter");
         }, this, 2, 1, 0)
-        stepbutton.scale.setTo(0.5, 0.5);
+        stepbutton.scale.setTo(0.6, 0.6);
 
     },
 

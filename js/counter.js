@@ -1,60 +1,34 @@
 var Counter = function (game) { };
-var steps = 0;
-var myShakeEvent = new Shake();
 
 Counter.prototype = {
    create: function () {
       steps = 0;
       var me = this;
 
-      background = game.add.tileSprite(0, 0, 1400, 1920, "background");
-      //var gameover_label = "Game over";
-      var walk_label1 = "Please walk 20 steps to get";
-      var walk_label2 = "a token!";
-      var steps_label = "Steps:";
-      var stepcount = steps;
-      var style = { font: "100px Forte", fill: "#ffc61e", align: "center" };
-      var style2 = { font: "200px Arial", fill: "#ff2800", align: "center" };
+      game.stage.backgroundColor = '#006bb4';
 
-      //this.game.add.text(520, 100, gameover_label, style);
-      this.game.add.text(100, 400, walk_label1, style);
-      this.game.add.text(530, 500, walk_label2, style);
-      this.game.add.text(550, 700, steps_label, style);
-      var cucc = this.game.add.text(600, 900, stepcount, style2);
+      let text = 'If you need to collect tokens to continue the game or you just simply have the';
+      text += ' mood for a short walk, then you are in the right place!';
+      text += ' In order to register your steps, you will have to open the Walking Warrior Pedometer Android application!';
+      text += '\n•Simply open the Android application.';
+      text += '\n•Log in to your Walking Warrior account if you have not done it yet.';
+      text += '\n•Start walking and the app will register your steps.';
+      text += '\n•When you are done, close the application completely to have the app store your steps.';
+      text += '\n•Get back in the browser and refresh the page. You will have received 1 token for every 20 steps.';
+      textBuilder = new TextBuilder(game, text);
+      textBuilder.setTextStyle({
+         font: '60px Acme',
+         fill: '#FCB514',
+      });
+      textBuilder.writeText();
 
-      button = game.add.button(420, 1200, 'playbutton', StartCount, this, 2, 1, 0);
-      button.scale.setTo(0.91, 0.91);
+      let bBuilder = new ButtonBuilder(game, this);
+      bBuilder.createButton(1200, 1750, 'backbutton', function() {
+         this.game.state.start("GameTitle")
+       })
 
       function restart() {
          me.restartGame();
-      }
-
-      function StartCount() {
-         myShakeEvent.start();
-
-         window.addEventListener('shake', doSteps, false);
-      }
-
-      function doSteps() {
-         steps++;
-         cucc.text = steps;
-
-         if (steps == 20) {
-            myShakeEvent.stop();
-
-            $.post("../ajax.php", {
-               type: 'updatesteps',
-               step: steps
-            });
-
-            // $.post("../ajax.php", {
-            //    type: 'updatetokens',
-            //    token: tokens
-            // });
-
-            button2 = game.add.button(1000, 1520, 'backbutton', restart, this, 2, 1, 0);
-            button2.scale.setTo(0.8, 0.8);
-         }
       }
    },
 

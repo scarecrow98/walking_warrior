@@ -2,21 +2,21 @@
 // Initialize the session
 session_start();
 
-// require_once "config.php";
+require_once "config.php";
  
-// // Check if the user is logged in, if not then redirect him to login page
-// if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
-//     $sessionid = $_SESSION['id'];
+// Check if the user is logged in, if not then redirect him to login page
+if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
+    $sessionid = $_SESSION['id'];
 
-//     $issetuser = mysqli_query($link, "SELECT `id` FROM `users` WHERE `id` = $sessionid");
-//     if(mysqli_num_rows($issetuser) == 0) { //valós felhasználó
-//         header("location: login.php");
-//         exit;
-//     }
-// } else {
-//     header("location: login.php");
-//     exit;
-// }
+    $issetuser = mysqli_query($link, "SELECT `id` FROM `users` WHERE `id` = $sessionid");
+    if(mysqli_num_rows($issetuser) == 0) { //valós felhasználó
+        header("location: login.php");
+        exit;
+    }
+} else {
+    header("location: login.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +31,7 @@ session_start();
 	<script type="text/javascript" src="js/boot.js"></script>
 	<script type="text/javascript" src="js/steps.js"></script>
 	<script type="text/javascript" src="js/preload.js"></script>
-	<script type="text/javascript" src="js/gametitle.js"></script>
+	<script type="text/javascript" src="js/gametitle.js?v=1.3"></script>
 	<script type="text/javascript" src="js/instructions/instruction.js"></script>
 	<script type="text/javascript" src="js/instructions/instruction1.js"></script>
 	<script type="text/javascript" src="js/instructions/instruction2.js"></script>
@@ -49,7 +49,7 @@ session_start();
     <!-- classes end -->
 
 	<script type="text/javascript" src="js/main.js"></script>
-	<script type="text/javascript" src="js/gameover.js"></script>
+	<script type="text/javascript" src="js/gameover.js?v=1.2"></script>
         <script type="text/javascript" src="js/info.js"></script>
         <script type="text/javascript" src="js/description.js"></script>
         <script type="text/javascript" src="js/nextlevel.js"></script>
@@ -77,7 +77,7 @@ session_start();
         <script type="text/javascript" src="js/level22.js"></script>
         <script type="text/javascript" src="js/level23.js"></script>
         <script type="text/javascript" src="js/nextlevelstep.js"></script>
-        <script type="text/javascript" src="js/counter.js"></script>
+        <script type="text/javascript" src="js/counter.js?v=1.3"></script>
         
     <style type="text/css">
         body {

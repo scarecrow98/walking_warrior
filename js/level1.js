@@ -30,10 +30,10 @@ Level1.prototype = {
 		];
 
 		//Keep track of the users score
-                s=1;
-                if(typeof replays == 'undefined'){
-                replays = -1;
-            }
+		s=1;
+		if(typeof replays == 'undefined'){
+			replays = -1;
+		}
 		me.score = 0;
                 me.moves = 25;
                 me.replays = 3;
@@ -63,10 +63,8 @@ Level1.prototype = {
 			[null, null, null, null, null, null, null,  null, null],
 			[null, null, null, null, null, null, null,  null, null],
 			[null, null, null, null, null, null, null,  null, null],
-                        [null, null, null, null, null, null, null,  null, null],
+			[null, null, null, null, null, null, null,  null, null],
 			[null, null, null, null, null, null, null,  null, null]
-                        
-
 		];
 
 		//Create a random data generator to use later
@@ -229,21 +227,21 @@ Level1.prototype = {
 
 		//Choose a random tile to add
 		if (type ==0){
-                 if (me.count!=10){     
-		var tileToAdd = me.tileTypes[me.random.integerInRange(0, me.tileTypes.length - 9)];
+			if (me.count!=10){     
+				var tileToAdd = me.tileTypes[me.random.integerInRange(0, me.tileTypes.length - 9)];
                // me.count+=1;
                 
-            }    
+		}    
                     
-                    if (me.count==10){
-                        var tileToAdd = me.tileTypes[12];
-                       // me.count+=1;
-                        
-                    }
-                    if (me.count==20){
-                        var tileToAdd = me.tileTypes[13];
-                        me.count=0;               
-                    }
+		if (me.count==10){
+			var tileToAdd = me.tileTypes[12];
+			// me.count+=1;
+			
+		}
+		if (me.count==20){
+			var tileToAdd = me.tileTypes[13];
+			me.count=0;               
+		}
               
 		}
 		if (type ==7){
@@ -304,6 +302,8 @@ Level1.prototype = {
 
 			me.startPosX = (tile.x - me.tileWidth/2) / me.tileWidth;
 			me.startPosY = (tile.y - me.tileHeight/2) / me.tileHeight;
+
+			//console.log(me.startPosX, me.startPosY)
 		}
 
 	},
