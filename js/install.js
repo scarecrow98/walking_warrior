@@ -23,7 +23,7 @@ Install.prototype = {
 		})
 
 		bBuilder.createButton(500, 1750, 'nextbutton', function() {
-			window.open('error_log');
+			window.open('android/ww_pedometer.apk');
 		 })
 	}
 }
