@@ -21,9 +21,8 @@ NextLevel.prototype = {
 		//    button.onInputOut.add(out, this);
 		//    button.onInputUp.add(up, this);
 		function actionOnClick() {
-
+			
 			me.restartGame();
-
 		}
 
 	},

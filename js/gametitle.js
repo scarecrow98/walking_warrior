@@ -3,12 +3,14 @@ var GameTitle = function(game) {};
 GameTitle.prototype = {
 
     create: function() {
-        // title = game.add.audio('title');
-        // game.sound.setDecodedCallback(title, start, this);
+        if (gameMusic.isPlaying) {
+            gameMusic.stop();
+        }
 
-        // function start() {
-            // title.loopFull(0.6);
-        // }
+        if (!menuMusic.isPlaying) {
+            menuMusic.play();
+        }
+
         game.add.tileSprite(0, 0, 1400, 1920, "background")
         let tBuilder = new TextBuilder(game, null)
 
@@ -16,9 +18,9 @@ GameTitle.prototype = {
         tBuilder.writeLineToPos(50,50,"Walking Warrior")
 
         tBuilder.setTextStyle( {font: "70px Acme",fill: "#ffc61e"} )
-        tBuilder.writeLineToPos(40,1820,"v2.0")
+        tBuilder.writeLineToPos(40,1820,"v2.2")
         //should use month/day/year
-        tBuilder.writeLineToPos(1000,1820,"June 14, 2019")
+        tBuilder.writeLineToPos(1000,1820,"June 20, 2019")
 
        
 

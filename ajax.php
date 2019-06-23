@@ -18,11 +18,17 @@ $gamelevel = $_POST['gamelevel'];
 if (isset($type) && $type != "") {
   switch ($type) {
     case 'gettokens':
-      $sql = mysqli_query($link, "SELECT `tokens` FROM `users` WHERE `id` = '$id'");
+      $sql = mysqli_query($link, "SELECT * FROM `users` WHERE `id` = '$id'");
 
       if(mysqli_num_rows($sql) == 1) {
         $row = mysqli_fetch_array($sql);
-        $response = array('tokens' => $row['tokens']);
+
+        $last_checkpoint_steps = -1;
+        if (intval($row['checkpoint_steps']) != -1) {
+          $last_checkpoint_steps = intval($row['steps']) - intval($row['checkpoint_steps']);
+        }
+
+        $response = array('tokens' => $row['tokens'], 'steps_from_last_checkpoint' => $last_checkpoint_steps);
         echo json_encode($response);
       }
     break;
@@ -45,6 +51,9 @@ if (isset($type) && $type != "") {
 
     case 'highestlevel':
       $sql = mysqli_query($link, "UPDATE `users` SET gamelevel = $gamelevel WHERE id = '$id' AND gamelevel < $gamelevel");
+      if (isset($_POST['saveCheckpointSteps'])) {
+        mysqli_query($link, "UPDATE `users` SET checkpoint_steps = steps WHERE id = $id");
+      }
     break;
 
     default:

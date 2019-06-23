@@ -1,11 +1,13 @@
 var Preload = function (game) {};
+var menuMusic, gameMusic;
+
 
 Preload.prototype = {
 
 	preload: function () {
 
 
-	        this.game.load.image('1', 'assets/Nerve Cell.png');
+	    this.game.load.image('1', 'assets/Nerve Cell.png');
 		this.game.load.image('2', 'assets/neutrophil.png');
 		this.game.load.image('3', 'assets/platelet.png');
 		this.game.load.image('4', 'assets/Redbloodcell.png');
@@ -70,10 +72,13 @@ Preload.prototype = {
 		this.game.load.spritesheet('instruction8', 'assets/instruction8.png', 1200, 1175)
 		this.game.load.spritesheet('homebutton', 'assets/homebutton.png')
 		this.game.load.spritesheet('nextbutton', 'assets/next.png')
+		this.game.load.spritesheet('downloadbutton', 'assets/download.png')
+
 	},
-
+	
 	create: function () {
-
+		menuMusic = game.add.audio('title', 1, true);
+		gameMusic = game.add.audio('game', 1, true);
 		this.game.state.start("GameTitle");
 	}
 }

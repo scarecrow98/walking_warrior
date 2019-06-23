@@ -35,6 +35,8 @@ Level9.prototype = {
 
             ];
 
+            me.tileOffset = 200
+
             //Keep track of the users score
             s = 9;
             //  replays = 3;
@@ -82,18 +84,17 @@ Level9.prototype = {
             me.random = new Phaser.RandomDataGenerator([seed]);
 
             //Set up some initial tiles and the score label
-            title = game.add.audio('game');
-            game.sound.setDecodedCallback(title, start, this);
+            if (!gameMusic.isPlaying) {
+                gameMusic.play();
+                menuMusic.stop();
+            }
+    
             small1 = game.add.button(206, 1800, '1', actionOnClic, this, 2, 1, 0);
             small1.scale.setTo(0.45, 0.45);
             small2 = game.add.button(435, 1800, '2', actionOnClic, this, 2, 1, 0);
             small2.scale.setTo(0.45, 0.45);
             small3 = game.add.button(672, 1800, '3', actionOnClic, this, 2, 1, 0);
             small3.scale.setTo(0.45, 0.45);
-
-            function start() {
-                title.loopFull(0.8);
-            }
 
             function actionOnClic() {
 
@@ -282,7 +283,7 @@ Level9.prototype = {
                 }
             }
             //Get the location of where the pointer is currently
-            var hoverX = me.game.input.x;
+            var hoverX = me.game.input.x - me.tileOffset;
             var hoverY = me.game.input.y;
 
             //Figure out what position on the grid that translates to
@@ -414,7 +415,7 @@ Level9.prototype = {
 
 
         //Add the tile at the correct x position, but add it to the top of the game (so we can slide it in)
-        var tile = me.tiles.create((x * me.tileWidth) + me.tileWidth / 2, 0, tileToAdd);
+        var tile = me.tiles.create(((x * me.tileWidth) + me.tileWidth / 2) + 200, 0, tileToAdd);
 
         //Animate the tile into the correct vertical position
         me.game.add.tween(tile).to({
@@ -445,7 +446,7 @@ Level9.prototype = {
         if (me.canMove) {
             me.activeTile1 = tile;
 
-            me.startPosX = (tile.x - me.tileWidth / 2) / me.tileWidth;
+            me.startPosX = (tile.x - me.tileOffset - me.tileWidth / 2) / me.tileWidth;
             me.startPosY = (tile.y - me.tileHeight / 2) / me.tileHeight;
         }
 
@@ -511,22 +512,33 @@ Level9.prototype = {
                 y: (me.activeTile2.y - me.tileHeight / 2) / me.tileHeight
             };
 
-            //Swap them in our "theoretical" grid
-            me.tileGrid[tile1Pos.x][tile1Pos.y] = me.activeTile2;
-            me.tileGrid[tile2Pos.x][tile2Pos.y] = me.activeTile1;
+            var t1Index = {
+				x: ((me.activeTile1.x - me.tileOffset) - me.tileWidth / 2) / me.tileWidth,
+				y: (me.activeTile1.y - me.tileHeight / 2) / me.tileHeight
+			};
+			var t2Index = {
+				x: ((me.activeTile2.x - me.tileOffset) - me.tileWidth / 2) / me.tileWidth,
+				y: (me.activeTile2.y - me.tileHeight / 2) / me.tileHeight
+			};
 
-            //Actually move them on the screen
-            me.game.add.tween(me.activeTile1).to({
-                x: tile2Pos.x * me.tileWidth + (me.tileWidth / 2),
-                y: tile2Pos.y * me.tileHeight + (me.tileHeight / 2)
-            }, 100, Phaser.Easing.Linear.In, true);
-            me.game.add.tween(me.activeTile2).to({
-                x: tile1Pos.x * me.tileWidth + (me.tileWidth / 2),
-                y: tile1Pos.y * me.tileHeight + (me.tileHeight / 2)
-            }, 100, Phaser.Easing.Linear.In, true);
+			//console.log(t1Index, t2Index)
 
-            me.activeTile1 = me.tileGrid[tile1Pos.x][tile1Pos.y];
-            me.activeTile2 = me.tileGrid[tile2Pos.x][tile2Pos.y];
+			//Swap them in our "theoretical" grid
+			me.tileGrid[t1Index.x][t1Index.y] = me.activeTile2;
+			me.tileGrid[t2Index.x][t2Index.y] = me.activeTile1;
+
+			//Actually move them on the screen
+			me.game.add.tween(me.activeTile1).to({
+				x: tile2Pos.x * me.tileWidth + (me.tileWidth / 2),
+				y: tile2Pos.y * me.tileHeight + (me.tileHeight / 2)
+			}, 100, Phaser.Easing.Linear.In, true);
+			me.game.add.tween(me.activeTile2).to({
+				x: tile1Pos.x * me.tileWidth + (me.tileWidth / 2),
+				y: tile1Pos.y * me.tileHeight + (me.tileHeight / 2)
+			}, 100, Phaser.Easing.Linear.In, true);
+
+			me.activeTile1 = me.tileGrid[t1Index.x][t1Index.y];
+			me.activeTile2 = me.tileGrid[t2Index.x][t2Index.y];
 
         }
 
@@ -1346,22 +1358,29 @@ Level9.prototype = {
 
         var me = this;
         var scoreFont = "100px Arial";
-        var textFont = "36px Arial";
+        var textFont = "50px Arial";
         var tFont = "60px Arial";
-        me.textLabel = me.game.add.text(1230, 80, "0", {
+        me.textLabel = me.game.add.text(10, 80, "0", {
             font: textFont,
             fill: "#ff2800"
         });
-        me.textLabel.text = "Moves left:";
-        me.movesLabel = me.game.add.text(1230, 120, "0", {
+        me.textLabel.text = "Moves:";
+        me.movesLabel = me.game.add.text(10, 120, "0", {
             font: scoreFont,
             fill: "#ff2800"
         });
-		me.textLabel2 = me.game.add.text(1230, 580, "0", {
+		me.textLabel2 = me.game.add.text(10, 580, "0", {
             font: textFont,
             fill: "#ff2800"
         });
-        me.textLabel2.text = "Level: 9";
+        me.textLabel2.text = "Level:";
+
+		me.levelLabel = game.add.text(10, 620, "0", {
+			font: scoreFont,
+			fill: "#ff2800"
+		})
+		me.levelLabel.text = "9";
+
         me.movesLabel.anchor.setTo(0, 0);
         me.movesLabel.align = 'center';
         me.movesLabel.text = me.moves;
@@ -1375,13 +1394,13 @@ Level9.prototype = {
 
         var me = this;
         var scoreFont = "100px Arial";
-        var textFont = "36px Arial";
-        me.text2Label = me.game.add.text(1220, 250, "0", {
+        var textFont = "50px Arial";
+        me.text2Label = me.game.add.text(10, 250, "0", {
             font: textFont,
             fill: "#ff2800"
         });
-        me.text2Label.text = "Tokens left:";
-        me.playsLabel = me.game.add.text(1230, 290, "0", {
+        me.text2Label.text = "Tokens:";
+        me.playsLabel = me.game.add.text(10, 290, "0", {
             font: scoreFont,
             fill: "#ff2800"
         });
@@ -1389,29 +1408,28 @@ Level9.prototype = {
         me.playsLabel.align = 'center';
         me.playsLabel.text = me.replays;
 
-        button = game.add.button(1230, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+        button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
         button.scale.setTo(0.8,0.8);
 
         function actionOnClick2 () {
-            //title.destroy();
-        this.game.state.start("GameTitle");
+            this.game.state.start("GameTitle");
         }
     },
 
     createSwitch: function() {
 
         var me = this;
-        me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
+        me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
         me.switch.scale.setTo(0.32, 0.32);
 
         function switchOnClick() {
             me.switches = true;
-            me.switch = game.add.button(1230, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
+            me.switch = game.add.button(10, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
             me.switch.scale.setTo(0.32, 0.32);
 
             function switchOnClick2() {
                 me.switches = false;
-                me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
+                me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
                 me.switch.scale.setTo(0.32, 0.32);
             }
         }

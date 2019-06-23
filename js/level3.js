@@ -31,6 +31,8 @@ Level3.prototype = {
 
 		];
 
+		me.tileOffset = 200
+
 		//Keep track of the users score
 		s = 3;
 		replays = -1;
@@ -76,12 +78,11 @@ Level3.prototype = {
 		me.random = new Phaser.RandomDataGenerator([seed]);
 
 		//Set up some initial tiles and the score label
-		title = game.add.audio('game');
-		game.sound.setDecodedCallback(title, start, this);
-
-		function start() {
-			title.loopFull(0.8);
+		if (!gameMusic.isPlaying) {
+			gameMusic.play();
+			menuMusic.stop();
 		}
+
 
 		me.initTiles();
 		me.createScore();
@@ -89,11 +90,10 @@ Level3.prototype = {
 		me.createReplays();
 		//  me.createSwitch();
 		//  me.createDelete();
-		button = game.add.button(1230, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
 		button.scale.setTo(0.8, 0.8);
 
 		function actionOnClick2() {
-			// title.destroy();
 			this.game.state.start("GameTitle");
 		}
 
@@ -239,7 +239,7 @@ Level3.prototype = {
 				}
 			}
 			//Get the location of where the pointer is currently
-			var hoverX = me.game.input.x;
+			var hoverX = me.game.input.x - me.tileOffset;
 			var hoverY = me.game.input.y;
 
 			//Figure out what position on the grid that translates to
@@ -369,7 +369,7 @@ Level3.prototype = {
 
 
 		//Add the tile at the correct x position, but add it to the top of the game (so we can slide it in)
-		var tile = me.tiles.create((x * me.tileWidth) + me.tileWidth / 2, 0, tileToAdd);
+		var tile = me.tiles.create(((x * me.tileWidth) + me.tileWidth / 2) + 200, 0, tileToAdd);
 
 		//Animate the tile into the correct vertical position
 		me.game.add.tween(tile).to({
@@ -394,13 +394,15 @@ Level3.prototype = {
 
 	tileDown: function (tile, pointer) {
 
+		console.table(this.tileGrid)
+
 		var me = this;
 
 		//Keep track of where the user originally clicked
 		if (me.canMove) {
 			me.activeTile1 = tile;
 
-			me.startPosX = (tile.x - me.tileWidth / 2) / me.tileWidth;
+			me.startPosX = (tile.x - me.tileOffset - me.tileWidth / 2) / me.tileWidth;
 			me.startPosY = (tile.y - me.tileHeight / 2) / me.tileHeight;
 		}
 
@@ -464,9 +466,20 @@ Level3.prototype = {
 				y: (me.activeTile2.y - me.tileHeight / 2) / me.tileHeight
 			};
 
+			var t1Index = {
+				x: ((me.activeTile1.x - me.tileOffset) - me.tileWidth / 2) / me.tileWidth,
+				y: (me.activeTile1.y - me.tileHeight / 2) / me.tileHeight
+			};
+			var t2Index = {
+				x: ((me.activeTile2.x - me.tileOffset) - me.tileWidth / 2) / me.tileWidth,
+				y: (me.activeTile2.y - me.tileHeight / 2) / me.tileHeight
+			};
+
+			//console.log(t1Index, t2Index)
+
 			//Swap them in our "theoretical" grid
-			me.tileGrid[tile1Pos.x][tile1Pos.y] = me.activeTile2;
-			me.tileGrid[tile2Pos.x][tile2Pos.y] = me.activeTile1;
+			me.tileGrid[t1Index.x][t1Index.y] = me.activeTile2;
+			me.tileGrid[t2Index.x][t2Index.y] = me.activeTile1;
 
 			//Actually move them on the screen
 			me.game.add.tween(me.activeTile1).to({
@@ -478,8 +491,8 @@ Level3.prototype = {
 				y: tile1Pos.y * me.tileHeight + (me.tileHeight / 2)
 			}, 100, Phaser.Easing.Linear.In, true);
 
-			me.activeTile1 = me.tileGrid[tile1Pos.x][tile1Pos.y];
-			me.activeTile2 = me.tileGrid[tile2Pos.x][tile2Pos.y];
+			me.activeTile1 = me.tileGrid[t1Index.x][t1Index.y];
+			me.activeTile2 = me.tileGrid[t2Index.x][t2Index.y];
 
 		}
 
@@ -550,10 +563,11 @@ Level3.prototype = {
 				me.score += 15;
 				me.lortcount++;
 				me.text3Label.text = "Make 3 L or T shape " + me.lortcount + "/3";
-				if (me.lortcount >= 3) {
+				if (me.lortcount >= 0) {
 					$.post("../ajax.php", {
 						type: 'highestlevel',
-						gamelevel: 5
+						gamelevel: 3,
+						saveCheckpointSteps: true
 					});
 					this.game.state.start("NextLevelStep");
 				}
@@ -1287,22 +1301,29 @@ Level3.prototype = {
 
 		var me = this;
 		var scoreFont = "100px Arial";
-		var textFont = "36px Arial";
+		var textFont = "50px Arial";
 		var tFont = "80px Arial";
-		me.textLabel = me.game.add.text(1230, 80, "0", {
+		me.textLabel = me.game.add.text(10, 80, "0", {
 			font: textFont,
 			fill: "#ff2800"
 		});
-		me.textLabel.text = "Moves left:";
-		me.textLabel2 = me.game.add.text(1230, 240, "0", {
+		me.textLabel.text = "Moves:";
+		me.textLabel2 = me.game.add.text(10, 240, "0", {
 			font: textFont,
 			fill: "#ff2800"
 		});
-		me.textLabel2.text = "Level: 3";
-		me.movesLabel = me.game.add.text(1230, 120, "0", {
+		me.textLabel2.text = "Level:";
+		me.movesLabel = me.game.add.text(10, 120, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		});
+
+		me.levelLabel = game.add.text(10, 280, "0", {
+			font: scoreFont,
+			fill: "#ff2800"
+		})
+		me.levelLabel.text = "3";
+
 		me.movesLabel.anchor.setTo(0, 0);
 		me.movesLabel.align = 'center';
 		me.movesLabel.text = me.moves;

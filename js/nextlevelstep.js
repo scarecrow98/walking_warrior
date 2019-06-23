@@ -28,6 +28,8 @@ NextLevelStep.prototype = {
       button = game.add.button(460, 1200, 'playbutton', StartCount, this, 2, 1, 0);
       button.scale.setTo(0.91, 0.91);
 
+      game.add.button(1200, 1750, 'backbutton', backToMenu, this, 2, 1, 0);
+
       function restart() {
          me.restartGame();
       }
@@ -36,6 +38,10 @@ NextLevelStep.prototype = {
          myShakeEvent.start();
 
          window.addEventListener('shake', doSteps, false);
+      }
+
+      function backToMenu() {
+         me.game.state.start('GameTitle')
       }
 
       function doSteps() {
