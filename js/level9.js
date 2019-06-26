@@ -418,10 +418,11 @@ Level9.prototype = {
         var tile = me.tiles.create(((x * me.tileWidth) + me.tileWidth / 2) + 200, 0, tileToAdd);
 
         //Animate the tile into the correct vertical position
-        me.game.add.tween(tile).to({
-            y: y * me.tileHeight + (me.tileHeight / 2)
-        }, 300, Phaser.Easing.Linear.In, true)
-
+		me.game.add.tween(tile).to({
+			y: y * me.tileHeight + (me.tileHeight / 2)
+		}, 300, Phaser.Easing.Linear.In, true).onComplete.add(function() {
+			me.correctTilePosition();
+		})
         //Set the tiles anchor point to the center
         tile.anchor.setTo(0.5, 0.5);
 
@@ -620,6 +621,33 @@ Level9.prototype = {
         }
 
     },
+
+    correctTilePosition: function() {
+		var me = this;
+
+		for (var i = 0; i < me.tileGrid.length; i++) {
+			for (var j = 0; j < me.tileGrid[i].length; j++) {
+				// var index = {
+				// 	x: (tile.x - me.tileOffset - me.tileWidth / 2) / me.tileWidth,
+				// 	y: (tile.y - me.tileHeight / 2) / me.tileHeight
+				// }
+
+				if (me.tileGrid[i][j]) {
+	
+					var tilePos = {
+						x: (i * me.tileWidth) + me.tileWidth / 2 + me.tileOffset,
+						y: (j * me.tileHeight) + (me.tileHeight / 2)
+					}
+					
+					// if (me.tileGrid[i][j].x != tilePos.x || me.tileGrid[i][j].y != tilePos.y) {
+					// 	console.warn("tile positon corrected:", tilePos.x, tilePos.y, me.tileGrid[i][j].position);
+					// }
+
+					me.tileGrid[i][j].position.setTo(tilePos.x, tilePos.y);
+				}
+			}
+		}
+	},
 
     getMatches: function(tileGrid) {
 

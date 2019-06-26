@@ -120,7 +120,6 @@ Level1.prototype = {
 			me.incrementPlays();
 			replays = me.replays;
 			this.game.state.start("Level1");
-
 		}
 
 
@@ -275,7 +274,9 @@ Level1.prototype = {
 		//Animate the tile into the correct vertical position
 		me.game.add.tween(tile).to({
 			y: y * me.tileHeight + (me.tileHeight / 2)
-		}, 300, Phaser.Easing.Linear.In, true)
+		}, 300, Phaser.Easing.Linear.In, true).onComplete.add(function() {
+			me.correctTilePosition();
+		})
 
 		//Set the tiles anchor point to the center
 		tile.anchor.setTo(0.5, 0.5);
@@ -294,9 +295,6 @@ Level1.prototype = {
 	},
 
 	tileDown: function (tile, pointer) {
-
-		console.table(this.tileGrid)
-
 
 		var me = this;
 
@@ -405,7 +403,6 @@ Level1.prototype = {
 	checkMatch: function () {
 
 		var me = this;
-
 		//Call the getMatches function to check for spots where there is
 		//a run of three or more tiles in a row
 		var matches = me.getMatches(me.tileGrid);
@@ -463,6 +460,33 @@ Level1.prototype = {
 			}
 		}
 
+	},
+
+	correctTilePosition: function() {
+		var me = this;
+
+		for (var i = 0; i < me.tileGrid.length; i++) {
+			for (var j = 0; j < me.tileGrid[i].length; j++) {
+				// var index = {
+				// 	x: (tile.x - me.tileOffset - me.tileWidth / 2) / me.tileWidth,
+				// 	y: (tile.y - me.tileHeight / 2) / me.tileHeight
+				// }
+
+				if (me.tileGrid[i][j]) {
+	
+					var tilePos = {
+						x: (i * me.tileWidth) + me.tileWidth / 2 + me.tileOffset,
+						y: (j * me.tileHeight) + (me.tileHeight / 2)
+					}
+					
+					// if (me.tileGrid[i][j].x != tilePos.x || me.tileGrid[i][j].y != tilePos.y) {
+					// 	console.warn("tile positon corrected:", tilePos.x, tilePos.y, me.tileGrid[i][j].position);
+					// }
+
+					me.tileGrid[i][j].position.setTo(tilePos.x, tilePos.y);
+				}
+			}
+		}
 	},
 
 	getMatches: function (tileGrid) {
@@ -548,6 +572,9 @@ Level1.prototype = {
 		for (var i = 0; i < matches.length; i++) {
 			var tempArr = matches[i];
 			if (tempArr.length > 3) { //bonustile part
+				console.warn('BOONUS')
+
+
 				var ax = -1;
 				var ay = -1;
 				var atilePos1 = me.getTilePos(me.tileGrid, me.activeTile1);
@@ -572,7 +599,7 @@ Level1.prototype = {
 				console.log("ax");
 				console.log(ax);
 				console.log("ay");
-				console.log(ax);
+				console.log(ay);
 
 				var type = 0;
 				if (tempArr[0].tileType == 1) {
@@ -593,14 +620,19 @@ Level1.prototype = {
 				if (tempArr[0].tileType == 6) {
 					type = 12;
 				}
+				//horizontal
 				if (ax != -1 && ay != -1) {
 					var tile2 = me.addTile(ax, ay, type);
 					me.tileGrid[ax][ay] = tile2;
+					console.log("bonus tile pos: horizontal", ax, ay);
+					me.resetTile();
 				}
+				//vertical
 				if (ax == -1 && ay == -1) {
 					var tile = tempArr[3];
 
 					var tilePos = me.getTilePos(me.tileGrid, tile);
+					console.log("bonus tile pos: vertical", tilePos.x, tilePos.y);
 					var tile2 = me.addTile(tilePos.x, tilePos.y, type);
 					me.tileGrid[tilePos.x][tilePos.y] = tile2;
 					me.resetTile();
@@ -686,7 +718,6 @@ Level1.prototype = {
 				}
 			}
 		}
-
 	},
 
 	fillTile: function (color) {
@@ -709,7 +740,6 @@ Level1.prototype = {
 
 			}
 		}
-
 	},
 
 	createScore: function () {

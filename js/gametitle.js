@@ -18,9 +18,9 @@ GameTitle.prototype = {
         tBuilder.writeLineToPos(50,50,"Walking Warrior")
 
         tBuilder.setTextStyle( {font: "70px Acme",fill: "#ffc61e"} )
-        tBuilder.writeLineToPos(40,1820,"v2.2")
+        tBuilder.writeLineToPos(40,1820,"v2.3")
         //should use month/day/year
-        tBuilder.writeLineToPos(1000,1820,"June 20, 2019")
+        tBuilder.writeLineToPos(1000,1820,"June 23, 2019")
 
        
 
