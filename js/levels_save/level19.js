@@ -1,8 +1,8 @@
-var Level14 = function (game) {
+var Level19 = function (game) {
 
 };
 
-Level14.prototype = {
+Level19.prototype = {
 
 	create: function () {
 
@@ -39,10 +39,10 @@ Level14.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 20;
-			//  replays = 3;
+			s = 19;
+			//     replays = 3;
 			me.score = 0;
-			me.moves = 35;
+			me.moves = 30;
 			me.replays = obj.tokens;
 			me.wasmove = false;
 			me.firsttime = true;
@@ -50,9 +50,7 @@ Level14.prototype = {
 			me.delete = false;
 			me.count = 0;
 			me.lort = false;
-			me.onecount = 0;
-			me.twocount = 0;
-			me.threecount = 0;
+			me.fivecount = 0;
 			//Keep track of the tiles the user is trying to swap (if any)
 			me.activeTile1 = null;
 			me.activeTile2 = null;
@@ -90,29 +88,13 @@ Level14.prototype = {
 				menuMusic.stop();
 			}
 	
-			small1 = game.add.button(206, 1800, '1', actionOnClic, this, 2, 1, 0);
-			small1.scale.setTo(0.45, 0.45);
-			small2 = game.add.button(435, 1800, '4', actionOnClic, this, 2, 1, 0);
-			small2.scale.setTo(0.45, 0.45);
-			small3 = game.add.button(672, 1800, '5', actionOnClic, this, 2, 1, 0);
-			small3.scale.setTo(0.45, 0.45);
-
-			function actionOnClic() {
-
-
-			}
-
-			/*function start() {
-			    title.loopFull(0.8);
-			}*/
-
 			me.initTiles();
 			me.createScore();
 			me.createMoves();
 			me.createReplays();
 			me.createSwitch();
 			me.createDelete();
-			me.text3Label.text = "Match      " + me.onecount + "/20       " + me.twocount + "/20       " + me.threecount + "/20";
+			me.text3Label.text = "Make 2 5-in-a-row " + me.fivecount + "/2";
 		});
 	},
 
@@ -124,31 +106,18 @@ Level14.prototype = {
 	update: function () {
 
 		var me = this;
-		if (me.onecount >= 20 && me.twocount >= 20 && me.threecount >= 20) {
-			replays = me.replays;
-			$.post("../ajax.php", {
-				type: 'minustokens'
-			});
-
-			$.post("../ajax.php", {
-				type: 'updatescore',
-				score: me.score
-			});
-
-			$.post("../ajax.php", {
-				type: 'highestlevel',
-				gamelevel: 14
-			});
-			this.game.state.start("NextLevel");
-		}
+		//                 if (me.score>=60){ 
+		//                     replays=me.replays;
+		//                   this.game.state.start("NextLevel");  
+		//                 }
 		if (me.replays <= 0) {
-
 			me.replays = 1;
 
 			$.post("../ajax.php", {
 				type: 'updatetokens',
 				token: 1
 			});
+
 
 			this.game.state.start("GameOver");
 		}
@@ -187,7 +156,7 @@ Level14.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 35;
+			me.moves = 30;
 			me.movesLabel.text = me.moves;
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
@@ -355,15 +324,18 @@ Level14.prototype = {
 
 		//Choose a random tile to add
 		if (type == 0) {
+			if (me.count != 10) {
+				var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+				me.count += 1;
 
-			var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+			}
 
 
-			//                    if (me.count==10){
-			//                        var tileToAdd = me.tileTypes[12];
-			//                        me.count+=1;
-			//                        
-			//                    }
+			if (me.count == 10) {
+				var tileToAdd = me.tileTypes[12];
+				me.count = 0;
+
+			}
 			//                    if (me.count==20){
 			//                        var tileToAdd = me.tileTypes[13];
 			//                        me.count=0;               
@@ -457,7 +429,7 @@ Level14.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Match      " + me.onecount + "/20       " + me.twocount + "/20       " + me.threecount + "/20";
+		me.text3Label.text = "Make 2 5-in-a-row " + me.fivecount + "/2";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -530,6 +502,7 @@ Level14.prototype = {
 
 			me.activeTile1 = me.tileGrid[t1Index.x][t1Index.y];
 			me.activeTile2 = me.tileGrid[t2Index.x][t2Index.y];
+
 		}
 
 	},
@@ -1139,23 +1112,18 @@ Level14.prototype = {
 
 				var type = 0;
 				if (tempArr[0].tileType == 1) {
-					me.onecount++;
 					type = 7;
 				}
 				if (tempArr[0].tileType == 2) {
 					type = 8;
-
 				}
 				if (tempArr[0].tileType == 3) {
-
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
-					me.twocount++;
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
-					me.threecount++;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
@@ -1205,23 +1173,18 @@ Level14.prototype = {
 
 				var type = 0;
 				if (tempArr[0].tileType == 1) {
-					me.onecount += 1;
 					type = 7;
 				}
 				if (tempArr[0].tileType == 2) {
 					type = 8;
-
 				}
 				if (tempArr[0].tileType == 3) {
-
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
-					me.twocount += 1;
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
-					me.threecount += 1;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
@@ -1242,18 +1205,6 @@ Level14.prototype = {
 			}
 
 			var tile = tempArr[0];
-			if (tempArr[0].tileType == 1) {
-				me.onecount += 3;
-
-			}
-			if (tempArr[0].tileType == 4) {
-				me.twocount += 3;
-
-			}
-			if (tempArr[0].tileType == 5) {
-				me.threecount += 3;
-
-			}
 
 			var tilePos = me.getTilePos(me.tileGrid, tile);
 			for (var j = 0; j < tempArr.length; j++) {
@@ -1364,7 +1315,7 @@ Level14.prototype = {
 		var me = this;
 		var scoreFont = "100px Arial";
 
-		me.scoreLabel = me.game.add.text(900, 1780, "0", {
+		me.scoreLabel = me.game.add.text(850, 1780, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		});
@@ -1378,7 +1329,7 @@ Level14.prototype = {
 		var me = this;
 		var scoreFont = "100px Arial";
 		var textFont = "50px Arial";
-		var tFont = "60px Arial";
+		var tFont = "80px Arial";
 		me.textLabel = me.game.add.text(10, 80, "0", {
 			font: textFont,
 			fill: "#ff2800"
@@ -1398,7 +1349,7 @@ Level14.prototype = {
 			font: scoreFont,
 			fill: "#ff2800"
 		})
-		me.levelLabel.text = "14";
+		me.levelLabel.text = "19";
 
 		me.movesLabel.anchor.setTo(0, 0);
 		me.movesLabel.align = 'center';
@@ -1433,6 +1384,7 @@ Level14.prototype = {
 		function actionOnClick2() {
 			this.game.state.start("GameTitle");
 		}
+
 	},
 
 	createSwitch: function () {
@@ -1489,6 +1441,23 @@ Level14.prototype = {
 		}
 		if (tempArr.length == 5) {
 			me.score += 25;
+			me.fivecount++;
+			if (me.fivecount >= 2) {
+				$.post("../ajax.php", {
+					type: 'minustokens'
+				});
+
+				$.post("../ajax.php", {
+					type: 'updatescore',
+					score: me.score
+				});
+
+				$.post("../ajax.php", {
+					type: 'highestlevel',
+					gamelevel: 19
+				});
+				this.game.state.start("NextLevel");
+			}
 		}
 		me.scoreLabel.text = "Score: " + me.score;
 
@@ -1505,12 +1474,10 @@ Level14.prototype = {
 		me.replays -= 1;
 
 		me.playsLabel.text = me.replays;
-
 		$.post("../ajax.php", {
 			type: 'updatetokens',
 			token: me.replays
 		});
-
 	},
 
 

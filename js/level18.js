@@ -7,93 +7,94 @@ Level18.prototype = {
 	create: function () {
 
 		var me = this;
-		$.post("../ajax.php", {
-			type: 'gettokens'
-		}, function (data) {
-			var obj = JSON.parse(data);
-			background = game.add.tileSprite(0, 0, 1400, 1920, "background");
 
-			//Declare assets that will be used as tiles
-			me.tileTypes = [
-				'1', //nervecell
-				'2', //neutrophil
-				'3', //platelet
-				'4', //redbloodcell
-				'5', //stemcell
-				'6', //whitebloodcell
-				'7', //bnerve
-				'8', //bneutro
-				'9', //bplat
-				'10', //bredb
-				'11', //bstemc
-				'12', //bwhiteblood
-				'13', // nomatch
-				'14', // nomove
-				'15', // magnesium
-				'16', // potassium
+		background = game.add.tileSprite(0, 0, 1400, 1920, "background");
 
-			];
+		//Declare assets that will be used as tiles
+		me.tileTypes = [
+			'1', //nervecell
+			'2', //neutrophil
+			'3', //platelet
+			'4', //redbloodcell
+			'5', //stemcell
+			'6', //whitebloodcell
+			'7', //bnerve
+			'8', //bneutro
+			'9', //bplat
+			'10', //bredb
+			'11', //bstemc
+			'12', //bwhiteblood
+			'13', // nomatch
+			'14', // nomove
 
-			me.tileOffset = 200
+		];
 
-			//Keep track of the users score
-			s = 18;
-			//  replays = -1;
-			me.score = 0;
-			me.moves = 40;
-			me.replays = obj.tokens;
-			me.wasmove = false;
-			me.firsttime = true;
-			me.switches = false;
-			me.delete = false;
-			me.count = 0;
-			me.lort = false;
-			me.bonuscount = 0;
-			//Keep track of the tiles the user is trying to swap (if any)
-			me.activeTile1 = null;
-			me.activeTile2 = null;
+		me.tileOffset = 200
 
-			//Controls whether the player can make a move or not
-			me.canMove = false;
+		//Keep track of the users score
+		s = 2;
 
-			//Grab the weigh and height of the tiles (assumes same size for all tiles)
-			me.tileWidth = 200 //me.game.cache.getImage('1').width;
-			me.tileHeight = 200 //me.game.cache.getImage('1').height;
+		me.score = 0;
+		me.moves = 30;
+		me.replays = 3;
+		me.wasmove = false;
+		me.firsttime = true;
+		me.switches = false;
+		me.delete = false;
+		me.count = 0;
+		me.bonus = 0;
+		me.extratime = 0;
+		me.bonustiles = 0;
+		//Keep track of the tiles the user is trying to swap (if any)
+		me.activeTile1 = null;
+		me.activeTile2 = null;
 
-			//This will hold all of the tile sprites
-			me.tiles = me.game.add.group();
+		//Controls whether the player can make a move or not
+		me.canMove = false;
 
-			//Initialise tile grid, this array will hold the positions of the tiles
-			//Create whatever shape you'd like
-			me.tileGrid = [
-				[null, null, null, null, null, null, null, null, null],
-				[null, null, null, null, null, null, null, null, null],
-				[null, null, null, null, null, null, null, null, null],
-				[null, null, null, null, null, null, null, null, null],
-				[null, null, null, null, null, null, null, null, null],
-				[null, null, null, null, null, null, null, null, null]
+		//Grab the weigh and height of the tiles (assumes same size for all tiles)
+		me.tileWidth = 200 //me.game.cache.getImage('1').width;
+		me.tileHeight = 200 //me.game.cache.getImage('1').height;
+
+		//This will hold all of the tile sprites
+		me.tiles = me.game.add.group();
+
+		//Initialise tile grid, this array will hold the positions of the tiles
+		//Create whatever shape you'd like
+		me.tileGrid = [
+			[null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null]
 
 
-			];
+		];
 
-			//Create a random data generator to use later
-			var seed = Date.now();
-			me.random = new Phaser.RandomDataGenerator([seed]);
+		//Create a random data generator to use later
+		var seed = Date.now();
+		me.random = new Phaser.RandomDataGenerator([seed]);
 
-			//Set up some initial tiles and the score label
-			if (!gameMusic.isPlaying) {
-				gameMusic.play();
-				menuMusic.stop();
-			}	
+		//Set up some initial tiles and the score label
+		if (!gameMusic.isPlaying) {
+			gameMusic.play();
+			menuMusic.stop();
+		}
 
-			me.initTiles();
-			me.createScore();
-			me.createMoves();
-			me.createReplays();
-			me.createSwitch();
-			me.createDelete();
-			me.text3Label.text = "Make 5 bonustiles " + me.bonuscount + "/5 ";
-		});
+		me.initTiles();
+		me.createScore();
+		me.createMoves();
+		me.createReplays();
+		//  me.createSwitch();
+		//  me.createDelete();
+		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+		button.scale.setTo(0.8, 0.8);
+
+		function actionOnClick2() {
+			this.game.state.start("GameTitle");
+		}
+
 	},
 
 	nothing: function () {
@@ -104,16 +105,8 @@ Level18.prototype = {
 	update: function () {
 
 		var me = this;
-		if (me.bonuscount >= 3) {
+		if (me.bonustiles >= 3) {
 			replays = me.replays;
-			$.post("../ajax.php", {
-				type: 'minustokens'
-			});
-
-			$.post("../ajax.php", {
-				type: 'updatescore',
-				score: me.score
-			});
 
 			$.post("../ajax.php", {
 				type: 'highestlevel',
@@ -122,12 +115,7 @@ Level18.prototype = {
 			this.game.state.start("NextLevel");
 		}
 		if (me.replays <= 0) {
-			me.replays = 1;
 
-			$.post("../ajax.php", {
-				type: 'updatetokens',
-				token: 1
-			});
 			this.game.state.start("GameOver");
 		}
 
@@ -165,8 +153,8 @@ Level18.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 40;
-			me.movesLabel.text = me.moves;
+			me.moves = 30;
+
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
 		}
@@ -189,69 +177,10 @@ Level18.prototype = {
 				me.tileUp();
 				me.createDelete();
 				me.moves -= 2;
-				me.movesLabel.text = me.moves;
 
+				me.checkMatch();
 				me.resetTile();
 				me.fillTile(0);
-				me.resetTile();
-				var once = 0;
-				var refreshIntervalId = setInterval(function () {
-					me.checkMatch();
-					if (once == 1) {
-						clearInterval(refreshIntervalId);
-					}
-					once += 1;
-				}, 300)
-
-
-			}
-			if (me.activeTile1 != null) {
-				if (me.activeTile1.tileType == 16) { //potassium part
-					var tilePos = me.getTilePos(me.tileGrid, me.activeTile1);
-					for (var i = 0; i < me.tileGrid.length; i++) {
-						var tile = me.tileGrid[i][tilePos.y];
-						me.tiles.remove(tile);
-						if (tilePos.x != -1 && tilePos.y != -1) {
-							me.tileGrid[i][tilePos.y] = null;
-						}
-
-					}
-					me.resetTile();
-					me.fillTile(0);
-					var once = 0;
-					var refreshIntervalId = setInterval(function () {
-						me.checkMatch();
-						if (once == 1) {
-							clearInterval(refreshIntervalId);
-						}
-						once += 1;
-					}, 300)
-					me.tileUp();
-				}
-			}
-			if (me.activeTile1 != null) {
-				if (me.activeTile1.tileType == 15) { //magnesium part
-					var tilePos = me.getTilePos(me.tileGrid, me.activeTile1);
-					for (var j = 0; j < me.tileGrid[0].length; j++) {
-						var tile = me.tileGrid[tilePos.x][j];
-						me.tiles.remove(tile);
-						if (tilePos.x != -1 && tilePos.y != -1) {
-							me.tileGrid[tilePos.x][j] = null;
-						}
-
-					}
-					me.resetTile();
-					me.fillTile(0);
-					var once = 0;
-					var refreshIntervalId = setInterval(function () {
-						me.checkMatch();
-						if (once == 1) {
-							clearInterval(refreshIntervalId);
-						}
-						once += 1;
-					}, 300)
-					me.tileUp();
-				}
 			}
 			//Get the location of where the pointer is currently
 			var hoverX = me.game.input.x - me.tileOffset;
@@ -333,22 +262,21 @@ Level18.prototype = {
 
 		//Choose a random tile to add
 		if (type == 0) {
-			if (me.count != 8) {
-				var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
-				me.count += 1;
+			if (me.count != 10) {
+				var tileToAdd = me.tileTypes[me.random.integerInRange(0, me.tileTypes.length - 9)];
+				//  me.count+=1;
 
 			}
 
-
-			if (me.count == 8) {
+			if (me.count == 10) {
 				var tileToAdd = me.tileTypes[12];
-				me.count = 0;
+				//    me.count+=1;
 
 			}
-			//                    if (me.count==20){
-			//                        var tileToAdd = me.tileTypes[13];
-			//                        me.count=0;               
-			//                    }
+			if (me.count == 20) {
+				var tileToAdd = me.tileTypes[13];
+				me.count = 0;
+			}
 
 		}
 		if (type == 7) {
@@ -374,15 +302,6 @@ Level18.prototype = {
 		if (type == 12) {
 			console.log("12esvolt");
 			var tileToAdd = me.tileTypes[11];
-		}
-		if (type == 15) {
-			console.log("15esvolt");
-			var tileToAdd = me.tileTypes[14];
-
-		}
-		if (type == 16) {
-			console.log("16esvolt");
-			var tileToAdd = me.tileTypes[15];
 		}
 
 
@@ -438,7 +357,7 @@ Level18.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Make 5 bonustiles " + me.bonuscount + "/5 ";
+		me.text3Label.text = "Make 3 bonustiles  " + me.bonustiles + "/3";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -469,8 +388,8 @@ Level18.prototype = {
 
 				me.fillTile(0);
 				me.score += 10;
-				me.moves += 3;
-				me.movesLabel.text = me.moves;
+				me.extratime += 5;
+
 				me.scoreLabel.text = "Score : " + me.score;
 				return;
 			}
@@ -511,7 +430,6 @@ Level18.prototype = {
 
 			me.activeTile1 = me.tileGrid[t1Index.x][t1Index.y];
 			me.activeTile2 = me.tileGrid[t2Index.x][t2Index.y];
-
 		}
 
 	},
@@ -519,7 +437,6 @@ Level18.prototype = {
 	checkMatch: function () {
 
 		var me = this;
-
 		//Call the getMatches function to check for spots where there is
 		//a run of three or more tiles in a row
 		var matches = me.getMatches(me.tileGrid);
@@ -538,7 +455,7 @@ Level18.prototype = {
 
 			//Fill the board with new tiles wherever there is an empty spot
 			me.fillTile(matches.length);
-			me.fillTile(matches.length);
+
 			//Trigger the tileUp event to reset the active tiles
 			me.game.time.events.add(300, function () {
 				me.tileUp();
@@ -552,7 +469,7 @@ Level18.prototype = {
 		} else {
 
 			//No match so just swap the tiles back to their original position and reset
-			if (me.switches == false && me.lort == false) {
+			if (me.switches == false) {
 
 
 				me.swapTiles();
@@ -570,23 +487,9 @@ Level18.prototype = {
 
 				me.moves -= 3;
 				me.switches = false;
-				me.movesLabel.text = me.moves;
+
 				me.canMove = true;
 				me.createSwitch();
-				me.tileUp();
-			}
-			if (me.lort == true) {
-
-				me.moves += 3;
-				me.score += 15;
-				// this.game.state.start("NextLevel");
-
-				me.scoreLabel.text = "Score : " + me.score
-				me.lort = false;
-				me.movesLabel.text = me.moves;
-				me.canMove = true;
-
-
 				me.tileUp();
 			}
 		}
@@ -624,402 +527,12 @@ Level18.prototype = {
 
 		var matches = [];
 		var groups = [];
-		var me = this;
-		//L part starting
-		for (var i = 0; i < tileGrid.length; i++) {
-			var tempArr = tileGrid[i];
-			groups = [];
-			for (var j = 0; j < tempArr.length; j++) {
-				//L part
-				if (i < tileGrid.length - 2) {
-					if (j < tempArr.length - 2)
-						if (typeof tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i + 2][j + 2] !== 'undefined') {
-							if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 1][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 2][j + 2].tileType)) {
-								me.lort = true;
-								if (groups.length > 0) {
-									if (groups.indexOf(tileGrid[i][j]) == -1) {
-										matches.push(groups);
-										groups = [];
-									}
-								}
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									groups.push(tileGrid[i][j]);
-								}
-								if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-									groups.push(tileGrid[i][j + 1]);
-									matches.push(groups);
-									groups = [];
-								}
-								if (groups.indexOf(tileGrid[i + 1][j + 2]) == -1) {
-									groups.push(tileGrid[i + 1][j + 2]);
-								}
-								if (groups.indexOf(tileGrid[i + 2][j + 2]) == -1) {
-									groups.push(tileGrid[i + 2][j + 2]);
-								}
-								//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-								//{
-								//	groups.push(tileGrid[i][j+2]);
-								//}
-								me.tiles.remove(me.tileGrid[i][j + 2]);
-								var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-								//Remove the tile from the theoretical grid
-								if (tilePos.x != -1 && tilePos.y != -1) {
-									me.tileGrid[tilePos.x][tilePos.y] = null;
-								}
-								var tile2 = me.addTile(tilePos.x, tilePos.y, 15);
-								me.tileGrid[i][j + 2] = tile2;
-
-								matches.push(groups);
-								groups = [];
-								console.log("LLLLLLLiba");
-
-								break;
-							}
-						}
-				}
-
-				if (i >= 2) {
-					if (typeof tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i - 2][j + 2] !== 'undefined') {
-
-						if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 1][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 2][j + 2].tileType)) {
-							me.lort = true;
-
-							if (groups.length > 0) {
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									matches.push(groups);
-									groups = [];
-								}
-							}
-							if (groups.indexOf(tileGrid[i][j]) == -1) {
-								groups.push(tileGrid[i][j]);
-							}
-							if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-								groups.push(tileGrid[i][j + 1]);
-								matches.push(groups);
-								groups = [];
-							}
-							if (groups.indexOf(tileGrid[i - 1][j + 2]) == -1) {
-								groups.push(tileGrid[i - 1][j + 2]);
-							}
-							if (groups.indexOf(tileGrid[i - 2][j + 2]) == -1) {
-								groups.push(tileGrid[i - 2][j + 2]);
-							}
-							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-							//{
-							//	groups.push(tileGrid[i][j+2]);
-							//}
-							me.tiles.remove(me.tileGrid[i][j + 2]);
-							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-							//Remove the tile from the theoretical grid
-							if (tilePos.x != -1 && tilePos.y != -1) {
-								me.tileGrid[tilePos.x][tilePos.y] = null;
-							}
-							var tile2 = me.addTile(tilePos.x, tilePos.y, 15);
-							me.tileGrid[i][j + 2] = tile2;
-
-							matches.push(groups);
-							groups = [];
-							console.log("LLLLLLLiba");
-
-
-							break;
-						}
-					}
-				}
-				if (i < tileGrid.length - 2) {
-					if (typeof tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i + 2][j] !== 'undefined') {
-						if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 1][j].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 2][j].tileType)) {
-							me.lort = true;
-							if (groups.length > 0) {
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									matches.push(groups);
-									groups = [];
-								}
-							}
-							if (groups.indexOf(tileGrid[i][j]) == -1) {
-								groups.push(tileGrid[i][j]);
-							}
-							if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-								groups.push(tileGrid[i][j + 1]);
-								matches.push(groups);
-								groups = [];
-							}
-							if (groups.indexOf(tileGrid[i + 1][j]) == -1) {
-								groups.push(tileGrid[i + 1][j]);
-							}
-							if (groups.indexOf(tileGrid[i + 2][j]) == -1) {
-								groups.push(tileGrid[i + 2][j]);
-							}
-							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-							//{
-							//	groups.push(tileGrid[i][j+2]);
-							//}
-							me.tiles.remove(me.tileGrid[i][j + 2]);
-							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-							//Remove the tile from the theoretical grid
-							if (tilePos.x != -1 && tilePos.y != -1) {
-								me.tileGrid[tilePos.x][tilePos.y] = null;
-							}
-							var tile2 = me.addTile(tilePos.x, tilePos.y, 15);
-							me.tileGrid[i][j + 2] = tile2;
-
-							matches.push(groups);
-							groups = [];
-							console.log("LLLLLLLiba");
-						}
-					}
-				}
-				if (i >= 2) {
-					if (typeof tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i - 2][j] !== 'undefined') {
-						if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 1][j].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 2][j].tileType)) {
-							me.lort = true;
-							if (groups.length > 0) {
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									matches.push(groups);
-									groups = [];
-								}
-							}
-							if (groups.indexOf(tileGrid[i][j]) == -1) {
-								groups.push(tileGrid[i][j]);
-							}
-							if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-								groups.push(tileGrid[i][j + 1]);
-								matches.push(groups);
-								groups = [];
-							}
-							if (groups.indexOf(tileGrid[i - 1][j]) == -1) {
-								groups.push(tileGrid[i - 1][j]);
-							}
-							if (groups.indexOf(tileGrid[i - 2][j]) == -1) {
-								groups.push(tileGrid[i - 2][j]);
-							}
-							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-							//{
-							//	groups.push(tileGrid[i][j+2]);
-							//}
-							me.tiles.remove(me.tileGrid[i][j + 2]);
-							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-							//Remove the tile from the theoretical grid
-							if (tilePos.x != -1 && tilePos.y != -1) {
-								me.tileGrid[tilePos.x][tilePos.y] = null;
-							}
-							var tile2 = me.addTile(tilePos.x, tilePos.y, 15);
-							me.tileGrid[i][j + 2] = tile2;
-
-							matches.push(groups);
-							groups = [];
-							console.log("LLLLLLLiba");
-
-							break;
-						}
-					}
-				}
-				if (i < tileGrid.length - 2) {
-					if (typeof tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i + 2][j + 1] !== 'undefined') {
-						if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 1][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 2][j + 1].tileType)) {
-							me.lort = true;
-							if (groups.length > 0) {
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									matches.push(groups);
-									groups = [];
-								}
-							}
-							if (groups.indexOf(tileGrid[i][j]) == -1) {
-								groups.push(tileGrid[i][j]);
-							}
-							if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-								groups.push(tileGrid[i][j + 1]);
-								matches.push(groups);
-								groups = [];
-							}
-							if (groups.indexOf(tileGrid[i + 1][j + 1]) == -1) {
-								groups.push(tileGrid[i + 1][j + 1]);
-							}
-							if (groups.indexOf(tileGrid[i + 2][j + 1]) == -1) {
-								groups.push(tileGrid[i + 2][j + 1]);
-							}
-							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-							//{
-							//	groups.push(tileGrid[i][j+2]);
-							//}
-							me.tiles.remove(me.tileGrid[i][j + 2]);
-							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-							//Remove the tile from the theoretical grid
-							if (tilePos.x != -1 && tilePos.y != -1) {
-								me.tileGrid[tilePos.x][tilePos.y] = null;
-							}
-							var tile2 = me.addTile(tilePos.x, tilePos.y, 16);
-							me.tileGrid[i][j + 2] = tile2;
-
-							matches.push(groups);
-							groups = [];
-							console.log("LLLLLLLiba");
-							break;
-						}
-					}
-				}
-				if (i >= 2) {
-					if (typeof tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i - 2][j + 1] !== 'undefined') {
-						if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 1][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 2][j + 1].tileType)) {
-							me.lort = true;
-							if (groups.length > 0) {
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									matches.push(groups);
-									groups = [];
-								}
-							}
-							if (groups.indexOf(tileGrid[i][j]) == -1) {
-								groups.push(tileGrid[i][j]);
-							}
-							if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-								groups.push(tileGrid[i][j + 1]);
-								matches.push(groups);
-								groups = [];
-							}
-							if (groups.indexOf(tileGrid[i - 1][j + 1]) == -1) {
-								groups.push(tileGrid[i - 1][j + 1]);
-							}
-							if (groups.indexOf(tileGrid[i - 2][j + 1]) == -1) {
-								groups.push(tileGrid[i - 2][j + 1]);
-							}
-							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-							//{
-							//	groups.push(tileGrid[i][j+2]);
-							//}
-							me.tiles.remove(me.tileGrid[i][j + 2]);
-							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-							//Remove the tile from the theoretical grid
-							if (tilePos.x != -1 && tilePos.y != -1) {
-								me.tileGrid[tilePos.x][tilePos.y] = null;
-							}
-							var tile2 = me.addTile(tilePos.x, tilePos.y, 16);
-							me.tileGrid[i][j + 2] = tile2;
-
-							matches.push(groups);
-							groups = [];
-							console.log("LLLLLLLiba");
-							break;
-						}
-					}
-				}
-				if (i < tileGrid.length - 1) {
-					if (i >= 1) {
-						if (typeof tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i + 1][j] !== 'undefined' && typeof tileGrid[i - 1][j] !== 'undefined') {
-							if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 1][j].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 1][j].tileType)) {
-								me.lort = true;
-								if (groups.length > 0) {
-									if (groups.indexOf(tileGrid[i][j]) == -1) {
-										matches.push(groups);
-										groups = [];
-									}
-								}
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									groups.push(tileGrid[i][j]);
-								}
-								if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-									groups.push(tileGrid[i][j + 1]);
-									matches.push(groups);
-									groups = [];
-								}
-								if (groups.indexOf(tileGrid[i + 1][j]) == -1) {
-									groups.push(tileGrid[i + 1][j]);
-								}
-								if (groups.indexOf(tileGrid[i - 1][j]) == -1) {
-									groups.push(tileGrid[i - 1][j]);
-								}
-								//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-								//{
-								//	groups.push(tileGrid[i][j+2]);
-								//}
-								me.tiles.remove(me.tileGrid[i][j + 2]);
-								var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-								//Remove the tile from the theoretical grid
-								if (tilePos.x != -1 && tilePos.y != -1) {
-									me.tileGrid[tilePos.x][tilePos.y] = null;
-								}
-								var tile2 = me.addTile(tilePos.x, tilePos.y, 16);
-								me.tileGrid[i][j + 2] = tile2;
-
-								matches.push(groups);
-								groups = [];
-								console.log("LLLLLLLiba");
-								break;
-							}
-						}
-					}
-				}
-				if (i >= 1 && i < tileGrid.length - 1) {
-					if (tileGrid[i][j] !== 'undefined' && typeof tileGrid[i][j + 1] !== 'undefined' && typeof tileGrid[i][j + 2] !== 'undefined' && typeof tileGrid[i + 1][j + 2] !== 'undefined' && typeof tileGrid[i - 1][j + 2] !== 'undefined') {
-						if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i - 1][j + 2].tileType) && Number(tileGrid[i][j].tileType) == Number(tileGrid[i + 1][j + 2].tileType)) {
-							me.lort = true;
-							if (groups.length > 0) {
-								if (groups.indexOf(tileGrid[i][j]) == -1) {
-									matches.push(groups);
-									groups = [];
-								}
-							}
-							if (groups.indexOf(tileGrid[i][j]) == -1) {
-								groups.push(tileGrid[i][j]);
-							}
-							if (groups.indexOf(tileGrid[i][j + 1]) == -1) {
-								groups.push(tileGrid[i][j + 1]);
-								matches.push(groups);
-								groups = [];
-							}
-							if (groups.indexOf(tileGrid[i + 1][j + 2]) == -1) {
-								groups.push(tileGrid[i + 1][j + 2]);
-							}
-							if (groups.indexOf(tileGrid[i - 1][j + 2]) == -1) {
-								groups.push(tileGrid[i - 1][j + 2]);
-							}
-							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
-							//{
-							//	groups.push(tileGrid[i][j+2]);
-							//}
-							me.tiles.remove(me.tileGrid[i][j + 2]);
-							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
-
-							//Remove the tile from the theoretical grid
-							if (tilePos.x != -1 && tilePos.y != -1) {
-								me.tileGrid[tilePos.x][tilePos.y] = null;
-							}
-							var tile2 = me.addTile(tilePos.x, tilePos.y, 16);
-							me.tileGrid[i][j + 2] = tile2;
-
-							matches.push(groups);
-							groups = [];
-							console.log("LLLLLLLiba");
-
-							break;
-						}
-					}
-				}
-			}
-		}
-		//L part ending
-		//if (me.lort ==true){
-		//me.resetTile();
-		//me.fillTile(0);
-		//setTimeout(function () {
-		//	me.checkMatch();
-		//}, 500)
-		//console.log("LORT");
-		//return matches;
-		//}     
 
 		//Check for horizontal matches
 		for (var i = 0; i < tileGrid.length; i++) {
 			var tempArr = tileGrid[i];
 			groups = [];
 			for (var j = 0; j < tempArr.length; j++) {
-
 				if (j < tempArr.length - 2)
 					if (tileGrid[i][j] && tileGrid[i][j + 1] && tileGrid[i][j + 2]) {
 						if (Number(tileGrid[i][j].tileType) != 12 && Number(tileGrid[i][j].tileType) != 13 && ((Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j + 1].tileType) == Number(tileGrid[i][j + 2].tileType)) || (Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) + 6 && Number(tileGrid[i][j + 1].tileType) == Number(tileGrid[i][j + 2].tileType)) || (Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) + 6 && Number(tileGrid[i][j + 1].tileType) == Number(tileGrid[i][j + 2].tileType) - 6) || (Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j + 1].tileType) == Number(tileGrid[i][j + 2].tileType) + 6) || (Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) - 6 && Number(tileGrid[i][j + 1].tileType) == Number(tileGrid[i][j + 2].tileType)) || (Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) - 6 && Number(tileGrid[i][j + 1].tileType) == Number(tileGrid[i][j + 2].tileType) + 6) || (Number(tileGrid[i][j].tileType) == Number(tileGrid[i][j + 1].tileType) && Number(tileGrid[i][j + 1].tileType) == Number(tileGrid[i][j + 2].tileType) - 6))) {
@@ -1092,10 +605,8 @@ Level18.prototype = {
 		//Loop through all the matches and remove the associated tiles
 		for (var i = 0; i < matches.length; i++) {
 			var tempArr = matches[i];
-			if (tempArr.length == 4) {
-				//bonustile part
-				me.bonuscount++;
-				me.text3Label.text = "Make 5 bonustiles " + me.bonuscount + "/5 ";
+			if (tempArr.length > 3) { //bonustile part
+				me.bonustiles += 1;
 				var ax = -1;
 				var ay = -1;
 				var atilePos1 = me.getTilePos(me.tileGrid, me.activeTile1);
@@ -1154,68 +665,6 @@ Level18.prototype = {
 					me.resetTile();
 				}
 			}
-
-
-			if (tempArr.length == 5) { // 5 bonustile part
-				var ax = -1;
-				var ay = -1;
-				var atilePos1 = me.getTilePos(me.tileGrid, me.activeTile1);
-				var atilePos2 = me.getTilePos(me.tileGrid, me.activeTile2);
-				console.log(atilePos1.x + " 1x " + atilePos1.y + " 1y " + atilePos2.x + " 2x " + atilePos2.y + " 2y ");
-				for (var k = 0; k <= Number(tempArr.length) - 1; k++) {
-					var tile3 = tempArr[k];
-					var tile4 = tempArr[k + 1];
-					var tilePos3 = me.getTilePos(me.tileGrid, tile3);
-					var tilePos4 = me.getTilePos(me.tileGrid, tile4);
-					console.log(k + " " + tilePos3.x + " kx " + tilePos3.y + " ky ");
-
-					if (Number(tilePos3.y) == Number(tilePos4.y) && Number(tilePos3.x) == Number(atilePos1.x) && Number(tilePos3.y) == Number(atilePos1.y)) {
-						ax = atilePos1.x;
-						ay = atilePos1.y;
-					}
-					if (Number(tilePos3.y) == Number(tilePos4.y) && Number(tilePos3.x) == Number(atilePos2.x) && Number(tilePos3.y) == Number(atilePos2.y)) {
-						ax = atilePos2.x;
-						ay = atilePos2.y;
-					}
-				}
-				console.log("ax");
-				console.log(ax);
-				console.log("ay");
-				console.log(ax);
-
-				var type = 0;
-				if (tempArr[0].tileType == 1) {
-					type = 7;
-				}
-				if (tempArr[0].tileType == 2) {
-					type = 8;
-				}
-				if (tempArr[0].tileType == 3) {
-					type = 9;
-				}
-				if (tempArr[0].tileType == 4) {
-					type = 10;
-				}
-				if (tempArr[0].tileType == 5) {
-					type = 11;
-				}
-				if (tempArr[0].tileType == 6) {
-					type = 12;
-				}
-				if (ax != -1 && ay != -1) {
-					var tile2 = me.addTile(ax, ay, type);
-					me.tileGrid[ax][ay] = tile2;
-				}
-				if (ax == -1 && ay == -1) {
-					var tile = tempArr[4];
-
-					var tilePos = me.getTilePos(me.tileGrid, tile);
-					var tile2 = me.addTile(tilePos.x, tilePos.y, type);
-					me.tileGrid[tilePos.x][tilePos.y] = tile2;
-					me.resetTile();
-				}
-			}
-
 			var tile = tempArr[0];
 
 			var tilePos = me.getTilePos(me.tileGrid, tile);
@@ -1223,8 +672,8 @@ Level18.prototype = {
 
 				var tile = tempArr[j];
 				if (Number(tile.tileType) > 6) {
-					me.moves += 2;
-					me.movesLabel.text = me.moves;
+					me.extratime += 5;
+
 
 				}
 				//Find where this tile lives in the theoretical grid
@@ -1306,7 +755,7 @@ Level18.prototype = {
 		//Check for blank spaces in the grid and add new tiles at that position
 		for (var i = 0; i < me.tileGrid.length; i++) {
 
-			for (var j = 0; j < me.tileGrid[0].length; j++) {
+			for (var j = 0; j < me.tileGrid.length; j++) {
 
 				if (me.tileGrid[i][j] == null) {
 					//Found a blank spot so lets add animate a tile there
@@ -1347,17 +796,17 @@ Level18.prototype = {
 			fill: "#ff2800"
 		});
 		me.textLabel.text = "Moves:";
-		me.movesLabel = me.game.add.text(10, 120, "0", {
-			font: scoreFont,
-			fill: "#ff2800"
-		});
-		me.textLabel2 = me.game.add.text(10, 720, "0", {
+		me.textLabel2 = me.game.add.text(10, 240, "0", {
 			font: textFont,
 			fill: "#ff2800"
 		});
 		me.textLabel2.text = "Level:";
+		me.movesLabel = me.game.add.text(10, 120, "0", {
+			font: scoreFont,
+			fill: "#ff2800"
+		});
 
-		me.levelLabel = game.add.text(10, 760, "0", {
+		me.levelLabel = game.add.text(10, 280, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		})
@@ -1366,6 +815,8 @@ Level18.prototype = {
 		me.movesLabel.anchor.setTo(0, 0);
 		me.movesLabel.align = 'center';
 		me.movesLabel.text = me.moves;
+
+
 		me.text3Label = me.game.add.text(20, 1800, "", {
 			font: tFont,
 			fill: "#ff2800"
@@ -1376,42 +827,24 @@ Level18.prototype = {
 
 		var me = this;
 		var scoreFont = "100px Arial";
-		var textFont = "50px Arial";
-		me.text2Label = me.game.add.text(10, 250, "0", {
-			font: textFont,
-			fill: "#ff2800"
-		});
-		me.text2Label.text = "Tokens:";
-		me.playsLabel = me.game.add.text(10, 290, "0", {
-			font: scoreFont,
-			fill: "#ff2800"
-		});
-		me.playsLabel.anchor.setTo(0, 0);
-		me.playsLabel.align = 'center';
-		me.playsLabel.text = me.replays;
+		var textFont = "36px Arial";
 
-		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-		button.scale.setTo(0.8, 0.8);
-
-		function actionOnClick2() {
-			this.game.state.start("GameTitle");
-		}
 	},
 
 	createSwitch: function () {
 
 		var me = this;
-		me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.32, 0.32);
 
 		function switchOnClick() {
 			me.switches = true;
-			me.switch = game.add.button(10, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(1230, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.32, 0.32);
 
 			function switchOnClick2() {
 				me.switches = false;
-				me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.32, 0.32);
 			}
 		}
@@ -1422,17 +855,17 @@ Level18.prototype = {
 	createDelete: function () {
 
 		var me = this;
-		me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.12, 0.12);
 
 		function switchOnClick() {
 			me.delete = true;
-			me.switch = game.add.button(10, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(1230, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.192, 0.192);
 
 			function switchOnClick2() {
 				me.delete = false;
-				me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.12, 0.12);
 			}
 		}
@@ -1460,19 +893,14 @@ Level18.prototype = {
 	incrementMoves: function () {
 		var me = this;
 		me.moves -= 1;
-
 		me.movesLabel.text = me.moves;
+
 	},
 	incrementPlays: function () {
 		var me = this;
 		me.replays -= 1;
 
 		me.playsLabel.text = me.replays;
-
-		$.post("../ajax.php", {
-			type: 'updatetokens',
-			token: me.replays
-		});
 
 	},
 

@@ -37,18 +37,19 @@ Level5.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 5;
-			//  replays = -1;
+			s = 13;
+			// replays = 3;
 			me.score = 0;
-			me.moves = 40;
+			me.moves = 30;
 			me.replays = obj.tokens;
 			me.wasmove = false;
 			me.firsttime = true;
 			me.switches = false;
 			me.delete = false;
 			me.count = 0;
+			me.fourcount = 0;
+			me.fivecount = 0;
 			me.lort = false;
-			me.bonuscount = 0;
 			//Keep track of the tiles the user is trying to swap (if any)
 			me.activeTile1 = null;
 			me.activeTile2 = null;
@@ -77,6 +78,15 @@ Level5.prototype = {
 			];
 
 			//Create a random data generator to use later
+			smallfive = game.add.button(270, 1800, '5', actionOnClic, this, 2, 1, 0);
+			smallfive.scale.setTo(0.45, 0.45);
+			smallsix = game.add.button(580, 1800, '6', actionOnClic, this, 2, 1, 0);
+			smallsix.scale.setTo(0.45, 0.45);
+
+			function actionOnClic() {
+
+
+			}
 			var seed = Date.now();
 			me.random = new Phaser.RandomDataGenerator([seed]);
 
@@ -90,8 +100,9 @@ Level5.prototype = {
 			me.createScore();
 			me.createMoves();
 			me.createReplays();
-			//  me.createSwitch();
-			//  me.createDelete();
+			me.createSwitch();
+			me.createDelete();
+			me.text3Label.text = "Match      " + me.fourcount + "/20       " + me.fivecount + "/20";
 		});
 	},
 
@@ -103,9 +114,8 @@ Level5.prototype = {
 	update: function () {
 
 		var me = this;
-		if (me.bonuscount >= 6) {
+		if (me.fourcount >= 20 && me.fivecount >= 20) {
 			replays = me.replays;
-
 			$.post("../ajax.php", {
 				type: 'minustokens'
 			});
@@ -166,7 +176,7 @@ Level5.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 45;
+			me.moves = 30;
 			me.movesLabel.text = me.moves;
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
@@ -436,7 +446,7 @@ Level5.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Make 6 bonustiles " + me.bonuscount + "/6 ";
+		me.text3Label.text = "Match      " + me.fourcount + "/20       " + me.fivecount + "/20";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -517,6 +527,7 @@ Level5.prototype = {
 	checkMatch: function () {
 
 		var me = this;
+
 		//Call the getMatches function to check for spots where there is
 		//a run of three or more tiles in a row
 		var matches = me.getMatches(me.tileGrid);
@@ -576,7 +587,7 @@ Level5.prototype = {
 
 				me.moves += 3;
 				me.score += 15;
-				// this.game.state.start("NextLevel");
+				//this.game.state.start("NextLevel");
 
 				me.scoreLabel.text = "Score : " + me.score
 				me.lort = false;
@@ -1089,10 +1100,7 @@ Level5.prototype = {
 		//Loop through all the matches and remove the associated tiles
 		for (var i = 0; i < matches.length; i++) {
 			var tempArr = matches[i];
-			if (tempArr.length == 4) {
-				//bonustile part
-				me.bonuscount++;
-				me.text3Label.text = "Make 6 bonustiles " + me.bonuscount + "/6 ";
+			if (tempArr.length == 4) { //bonustile part
 				var ax = -1;
 				var ay = -1;
 				var atilePos1 = me.getTilePos(me.tileGrid, me.activeTile1);
@@ -1130,12 +1138,15 @@ Level5.prototype = {
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
+
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
+					me.fourcount++;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
+					me.fivecount++;
 					type = 12;
 				}
 				if (ax != -1 && ay != -1) {
@@ -1191,12 +1202,15 @@ Level5.prototype = {
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
+
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
+					me.fourcount += 2;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
+					me.fivecount += 2;
 					type = 12;
 				}
 				if (ax != -1 && ay != -1) {
@@ -1214,7 +1228,14 @@ Level5.prototype = {
 			}
 
 			var tile = tempArr[0];
+			if (tempArr[0].tileType == 5) {
+				me.fourcount += 3;
 
+			}
+			if (tempArr[0].tileType == 6) {
+				me.fivecount += 3;
+
+			}
 			var tilePos = me.getTilePos(me.tileGrid, tile);
 			for (var j = 0; j < tempArr.length; j++) {
 
@@ -1348,13 +1369,13 @@ Level5.prototype = {
 			font: scoreFont,
 			fill: "#ff2800"
 		});
-		me.textLabel2 = me.game.add.text(10, 420, "0", {
+		me.textLabel2 = me.game.add.text(10, 720, "0", {
 			font: textFont,
 			fill: "#ff2800"
 		});
 		me.textLabel2.text = "Level:";
 
-		me.levelLabel = game.add.text(10, 460, "0", {
+		me.levelLabel = game.add.text(10, 760, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		})
@@ -1387,30 +1408,31 @@ Level5.prototype = {
 		me.playsLabel.align = 'center';
 		me.playsLabel.text = me.replays;
 
-		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-		button.scale.setTo(0.8, 0.8);
-
-		function actionOnClick2() {
-			this.game.state.start("GameTitle");
-		}
 	},
 
 	createSwitch: function () {
 
 		var me = this;
-		me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.32, 0.32);
 
 		function switchOnClick() {
 			me.switches = true;
-			me.switch = game.add.button(1230, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(10, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.32, 0.32);
 
 			function switchOnClick2() {
 				me.switches = false;
-				me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.32, 0.32);
 			}
+		}
+
+		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+		button.scale.setTo(0.8, 0.8);
+
+		function actionOnClick2() {
+			this.game.state.start("GameTitle");
 		}
 
 	},
@@ -1418,17 +1440,17 @@ Level5.prototype = {
 	createDelete: function () {
 
 		var me = this;
-		me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.12, 0.12);
 
 		function switchOnClick() {
 			me.delete = true;
-			me.switch = game.add.button(1230, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(10, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.192, 0.192);
 
 			function switchOnClick2() {
 				me.delete = false;
-				me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.12, 0.12);
 			}
 		}

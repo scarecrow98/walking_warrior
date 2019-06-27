@@ -7,14 +7,11 @@ Level19.prototype = {
 	create: function () {
 
 		var me = this;
-
 		$.post("../ajax.php", {
 			type: 'gettokens'
 		}, function (data) {
 			var obj = JSON.parse(data);
-
 			background = game.add.tileSprite(0, 0, 1400, 1920, "background");
-
 			//Declare assets that will be used as tiles
 			me.tileTypes = [
 				'1', //nervecell
@@ -39,8 +36,8 @@ Level19.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 19;
-			//     replays = 3;
+			s = 4;
+			replays = 3;
 			me.score = 0;
 			me.moves = 30;
 			me.replays = obj.tokens;
@@ -50,7 +47,6 @@ Level19.prototype = {
 			me.delete = false;
 			me.count = 0;
 			me.lort = false;
-			me.fivecount = 0;
 			//Keep track of the tiles the user is trying to swap (if any)
 			me.activeTile1 = null;
 			me.activeTile2 = null;
@@ -86,16 +82,16 @@ Level19.prototype = {
 			if (!gameMusic.isPlaying) {
 				gameMusic.play();
 				menuMusic.stop();
-			}
-	
+			}	
+
 			me.initTiles();
 			me.createScore();
 			me.createMoves();
 			me.createReplays();
-			me.createSwitch();
-			me.createDelete();
-			me.text3Label.text = "Make 2 5-in-a-row " + me.fivecount + "/2";
+			//  me.createSwitch();
+			//  me.createDelete();
 		});
+
 	},
 
 	nothing: function () {
@@ -106,10 +102,26 @@ Level19.prototype = {
 	update: function () {
 
 		var me = this;
-		//                 if (me.score>=60){ 
-		//                     replays=me.replays;
-		//                   this.game.state.start("NextLevel");  
-		//                 }
+		if (me.score >= 80) {
+			replays = me.replays;
+
+			$.post("../ajax.php", {
+				type: 'minustokens'
+			});
+
+			$.post("../ajax.php", {
+				type: 'updatescore',
+				score: me.score
+			});
+
+			$.post("../ajax.php", {
+				type: 'highestlevel',
+				gamelevel: 19
+			});
+
+			this.game.state.start("NextLevel");
+		}
+
 		if (me.replays <= 0) {
 			me.replays = 1;
 
@@ -117,8 +129,6 @@ Level19.prototype = {
 				type: 'updatetokens',
 				token: 1
 			});
-
-
 			this.game.state.start("GameOver");
 		}
 
@@ -324,18 +334,15 @@ Level19.prototype = {
 
 		//Choose a random tile to add
 		if (type == 0) {
-			if (me.count != 10) {
-				var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
-				me.count += 1;
 
-			}
+			var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
 
 
-			if (me.count == 10) {
-				var tileToAdd = me.tileTypes[12];
-				me.count = 0;
-
-			}
+			//                    if (me.count==10){
+			//                        var tileToAdd = me.tileTypes[12];
+			//                        me.count+=1;
+			//                        
+			//                    }
 			//                    if (me.count==20){
 			//                        var tileToAdd = me.tileTypes[13];
 			//                        me.count=0;               
@@ -429,7 +436,7 @@ Level19.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Make 2 5-in-a-row " + me.fivecount + "/2";
+		me.text3Label.text = "Reach 80 points";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -510,7 +517,6 @@ Level19.prototype = {
 	checkMatch: function () {
 
 		var me = this;
-
 		//Call the getMatches function to check for spots where there is
 		//a run of three or more tiles in a row
 		var matches = me.getMatches(me.tileGrid);
@@ -586,7 +592,7 @@ Level19.prototype = {
 
 	correctTilePosition: function() {
 		var me = this;
-
+		console.log(me.tileGrid);
 		for (var i = 0; i < me.tileGrid.length; i++) {
 			for (var j = 0; j < me.tileGrid[i].length; j++) {
 				// var index = {
@@ -1322,6 +1328,7 @@ Level19.prototype = {
 		me.scoreLabel.anchor.setTo(0, 0);
 		me.scoreLabel.align = 'center';
 		me.scoreLabel.text = "Score: " + me.score;
+
 	},
 
 	createMoves: function () {
@@ -1339,13 +1346,13 @@ Level19.prototype = {
 			font: scoreFont,
 			fill: "#ff2800"
 		});
-		me.textLabel2 = me.game.add.text(10, 720, "0", {
+		me.textLabel2 = me.game.add.text(10, 420, "0", {
 			font: textFont,
 			fill: "#ff2800"
 		});
 		me.textLabel2.text = "Level:";
 
-		me.levelLabel = game.add.text(10, 760, "0", {
+		me.levelLabel = game.add.text(10, 460, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		})
@@ -1384,44 +1391,42 @@ Level19.prototype = {
 		function actionOnClick2() {
 			this.game.state.start("GameTitle");
 		}
-
 	},
 
 	createSwitch: function () {
 
 		var me = this;
-		me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.32, 0.32);
 
 		function switchOnClick() {
 			me.switches = true;
-			me.switch = game.add.button(10, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(1230, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.32, 0.32);
 
 			function switchOnClick2() {
 				me.switches = false;
-				me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.32, 0.32);
 			}
 		}
-
 
 	},
 
 	createDelete: function () {
 
 		var me = this;
-		me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.12, 0.12);
 
 		function switchOnClick() {
 			me.delete = true;
-			me.switch = game.add.button(10, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(1230, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.192, 0.192);
 
 			function switchOnClick2() {
 				me.delete = false;
-				me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.12, 0.12);
 			}
 		}
@@ -1441,26 +1446,8 @@ Level19.prototype = {
 		}
 		if (tempArr.length == 5) {
 			me.score += 25;
-			me.fivecount++;
-			if (me.fivecount >= 2) {
-				$.post("../ajax.php", {
-					type: 'minustokens'
-				});
-
-				$.post("../ajax.php", {
-					type: 'updatescore',
-					score: me.score
-				});
-
-				$.post("../ajax.php", {
-					type: 'highestlevel',
-					gamelevel: 19
-				});
-				this.game.state.start("NextLevel");
-			}
 		}
 		me.scoreLabel.text = "Score: " + me.score;
-
 	},
 
 	incrementMoves: function () {

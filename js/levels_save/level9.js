@@ -1,8 +1,8 @@
-var Level8 = function(game) {
+var Level9 = function(game) {
 
 };
 
-Level8.prototype = {
+Level9.prototype = {
 
     create: function() {
 
@@ -137,7 +137,7 @@ Level8.prototype = {
 
             $.post("../ajax.php", {
                 type: 'highestlevel',
-                gamelevel: 8
+                gamelevel: 9
             });
 
             this.game.state.start("NextLevel");
@@ -1407,7 +1407,7 @@ Level8.prototype = {
 			font: scoreFont,
 			fill: "#ff2800"
 		})
-		me.levelLabel.text = "8";
+		me.levelLabel.text = "9";
 
         me.movesLabel.anchor.setTo(0, 0);
         me.movesLabel.align = 'center';

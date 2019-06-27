@@ -7,12 +7,10 @@ Level23.prototype = {
 	create: function () {
 
 		var me = this;
-
 		$.post("../ajax.php", {
 			type: 'gettokens'
 		}, function (data) {
 			var obj = JSON.parse(data);
-
 			background = game.add.tileSprite(0, 0, 1400, 1920, "background");
 
 			//Declare assets that will be used as tiles
@@ -39,10 +37,10 @@ Level23.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 23;
-			//   replays = 3;
+			s = 16;
+			//replays = -1;
 			me.score = 0;
-			me.moves = 35;
+			me.moves = 40;
 			me.replays = obj.tokens;
 			me.wasmove = false;
 			me.firsttime = true;
@@ -50,8 +48,6 @@ Level23.prototype = {
 			me.delete = false;
 			me.count = 0;
 			me.lort = false;
-			me.lortcount = 0;
-			me.bonuscount = 0;
 			//Keep track of the tiles the user is trying to swap (if any)
 			me.activeTile1 = null;
 			me.activeTile2 = null;
@@ -87,24 +83,16 @@ Level23.prototype = {
 			if (!gameMusic.isPlaying) {
 				gameMusic.play();
 				menuMusic.stop();
-			}
-	
+			}	
+
 			me.initTiles();
 			me.createScore();
 			me.createMoves();
 			me.createReplays();
 			me.createSwitch();
-			me.text3Label.text = "Make bonustiles(" + me.bonuscount + "/3) and L-s or T-s(" + me.lortcount + "/2)";
 			me.createDelete();
-
+			me.text3Label.text = "Match 2 neighbouring bonustiles";
 		});
-		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-		button.scale.setTo(0.8, 0.8);
-
-		function actionOnClick2() {
-			this.game.state.start("GameTitle");
-		}
-
 	},
 
 	nothing: function () {
@@ -115,14 +103,14 @@ Level23.prototype = {
 	update: function () {
 
 		var me = this;
-		if (me.bonuscount >= 3 && me.lortcount >= 2) {
+		if (me.score >= 6000) {
 			replays = me.replays;
 			$.post("../ajax.php", {
 				type: 'minustokens'
 			});
 
 			$.post("../ajax.php", {
-				ype: 'updatescore',
+				type: 'updatescore',
 				score: me.score
 			});
 
@@ -130,6 +118,7 @@ Level23.prototype = {
 				type: 'highestlevel',
 				gamelevel: 23
 			});
+
 			this.game.state.start("GameTitle");
 		}
 		if (me.replays <= 0) {
@@ -140,7 +129,6 @@ Level23.prototype = {
 				type: 'updatetokens',
 				token: 1
 			});
-
 			this.game.state.start("GameOver");
 		}
 
@@ -178,7 +166,7 @@ Level23.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 35;
+			me.moves = 40;
 			me.movesLabel.text = me.moves;
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
@@ -352,13 +340,12 @@ Level23.prototype = {
 
 			}
 
-
 			if (me.count == 10) {
 				var tileToAdd = me.tileTypes[12];
 				me.count += 1;
 
 			}
-			if (me.count == 22) {
+			if (me.count == 20) {
 				var tileToAdd = me.tileTypes[13];
 				me.count = 0;
 			}
@@ -451,7 +438,7 @@ Level23.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Make bonustiles(" + me.bonuscount + "/2) and L-s or T-s(" + me.lortcount + "/2)";
+		me.text3Label.text = "Match 2 neighbouring bonustiles";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -485,6 +472,7 @@ Level23.prototype = {
 				me.moves += 3;
 				me.movesLabel.text = me.moves;
 				me.scoreLabel.text = "Score : " + me.score;
+				this.game.state.start("NextLevel");
 				return;
 			}
 
@@ -524,6 +512,7 @@ Level23.prototype = {
 
 			me.activeTile1 = me.tileGrid[t1Index.x][t1Index.y];
 			me.activeTile2 = me.tileGrid[t2Index.x][t2Index.y];
+
 		}
 
 	},
@@ -591,8 +580,7 @@ Level23.prototype = {
 
 				me.moves += 3;
 				me.score += 15;
-				me.lortcount++;
-				//this.game.state.start("NextLevel");
+
 
 				me.scoreLabel.text = "Score : " + me.score
 				me.lort = false;
@@ -1106,7 +1094,6 @@ Level23.prototype = {
 		for (var i = 0; i < matches.length; i++) {
 			var tempArr = matches[i];
 			if (tempArr.length == 4) { //bonustile part
-				me.bonuscount++;
 				var ax = -1;
 				var ay = -1;
 				var atilePos1 = me.getTilePos(me.tileGrid, me.activeTile1);
@@ -1352,7 +1339,7 @@ Level23.prototype = {
 		var me = this;
 		var scoreFont = "100px Arial";
 		var textFont = "50px Arial";
-		var tFont = "53px Arial";
+		var tFont = "64px Arial";
 		me.textLabel = me.game.add.text(10, 80, "0", {
 			font: textFont,
 			fill: "#ff2800"
@@ -1377,18 +1364,10 @@ Level23.prototype = {
 		me.movesLabel.anchor.setTo(0, 0);
 		me.movesLabel.align = 'center';
 		me.movesLabel.text = me.moves;
-		me.text3Label = me.game.add.text(5, 1800, "", {
+		me.text3Label = me.game.add.text(20, 1800, "", {
 			font: tFont,
 			fill: "#ff2800"
 		});
-
-		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-		button.scale.setTo(0.8, 0.8);
-
-		function actionOnClick2() {
-			//title.destroy();
-			this.game.state.start("GameTitle");
-		}
 	},
 
 	createReplays: function () {
@@ -1409,6 +1388,12 @@ Level23.prototype = {
 		me.playsLabel.align = 'center';
 		me.playsLabel.text = me.replays;
 
+		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+		button.scale.setTo(0.8, 0.8);
+
+		function actionOnClick2() {
+			this.game.state.start("GameTitle");
+		}
 	},
 
 	createSwitch: function () {
@@ -1481,12 +1466,10 @@ Level23.prototype = {
 		me.replays -= 1;
 
 		me.playsLabel.text = me.replays;
-
 		$.post("../ajax.php", {
 			type: 'updatetokens',
 			token: me.replays
 		});
-
 	},
 
 

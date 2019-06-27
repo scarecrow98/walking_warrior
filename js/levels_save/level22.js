@@ -1,8 +1,8 @@
-var Level14 = function (game) {
+var Level22 = function (game) {
 
 };
 
-Level14.prototype = {
+Level22.prototype = {
 
 	create: function () {
 
@@ -39,10 +39,10 @@ Level14.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 20;
+			s = 22;
 			//  replays = 3;
 			me.score = 0;
-			me.moves = 35;
+			me.moves = 30;
 			me.replays = obj.tokens;
 			me.wasmove = false;
 			me.firsttime = true;
@@ -92,9 +92,9 @@ Level14.prototype = {
 	
 			small1 = game.add.button(206, 1800, '1', actionOnClic, this, 2, 1, 0);
 			small1.scale.setTo(0.45, 0.45);
-			small2 = game.add.button(435, 1800, '4', actionOnClic, this, 2, 1, 0);
+			small2 = game.add.button(435, 1800, '2', actionOnClic, this, 2, 1, 0);
 			small2.scale.setTo(0.45, 0.45);
-			small3 = game.add.button(672, 1800, '5', actionOnClic, this, 2, 1, 0);
+			small3 = game.add.button(672, 1800, '3', actionOnClic, this, 2, 1, 0);
 			small3.scale.setTo(0.45, 0.45);
 
 			function actionOnClic() {
@@ -102,16 +102,12 @@ Level14.prototype = {
 
 			}
 
-			/*function start() {
-			    title.loopFull(0.8);
-			}*/
-
 			me.initTiles();
 			me.createScore();
 			me.createMoves();
 			me.createReplays();
 			me.createSwitch();
-			me.createDelete();
+			//  me.createDelete();
 			me.text3Label.text = "Match      " + me.onecount + "/20       " + me.twocount + "/20       " + me.threecount + "/20";
 		});
 	},
@@ -137,7 +133,7 @@ Level14.prototype = {
 
 			$.post("../ajax.php", {
 				type: 'highestlevel',
-				gamelevel: 14
+				gamelevel: 22
 			});
 			this.game.state.start("NextLevel");
 		}
@@ -187,7 +183,7 @@ Level14.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 35;
+			me.moves = 30;
 			me.movesLabel.text = me.moves;
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
@@ -355,19 +351,22 @@ Level14.prototype = {
 
 		//Choose a random tile to add
 		if (type == 0) {
+			if (me.count != 10) {
+				var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+				me.count += 1;
 
-			var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+			}
 
 
-			//                    if (me.count==10){
-			//                        var tileToAdd = me.tileTypes[12];
-			//                        me.count+=1;
-			//                        
-			//                    }
-			//                    if (me.count==20){
-			//                        var tileToAdd = me.tileTypes[13];
-			//                        me.count=0;               
-			//                    }
+			if (me.count == 10) {
+				var tileToAdd = me.tileTypes[12];
+				me.count += 1;
+
+			}
+			if (me.count == 25) {
+				var tileToAdd = me.tileTypes[13];
+				me.count = 0;
+			}
 
 		}
 		if (type == 7) {
@@ -1144,18 +1143,16 @@ Level14.prototype = {
 				}
 				if (tempArr[0].tileType == 2) {
 					type = 8;
-
+					me.twocount++;
 				}
 				if (tempArr[0].tileType == 3) {
-
+					me.threecount++;
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
-					me.twocount++;
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
-					me.threecount++;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
@@ -1210,18 +1207,16 @@ Level14.prototype = {
 				}
 				if (tempArr[0].tileType == 2) {
 					type = 8;
-
+					me.twocount += 1;
 				}
 				if (tempArr[0].tileType == 3) {
-
+					me.threecount += 1;
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
-					me.twocount += 1;
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
-					me.threecount += 1;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
@@ -1246,11 +1241,11 @@ Level14.prototype = {
 				me.onecount += 3;
 
 			}
-			if (tempArr[0].tileType == 4) {
+			if (tempArr[0].tileType == 2) {
 				me.twocount += 3;
 
 			}
-			if (tempArr[0].tileType == 5) {
+			if (tempArr[0].tileType == 3) {
 				me.threecount += 3;
 
 			}
@@ -1388,17 +1383,17 @@ Level14.prototype = {
 			font: scoreFont,
 			fill: "#ff2800"
 		});
-		me.textLabel2 = me.game.add.text(10, 720, "0", {
+		me.textLabel2 = me.game.add.text(10, 580, "0", {
 			font: textFont,
 			fill: "#ff2800"
 		});
 		me.textLabel2.text = "Level:";
 
-		me.levelLabel = game.add.text(10, 760, "0", {
+		me.levelLabel = game.add.text(10, 620, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		})
-		me.levelLabel.text = "14";
+		me.levelLabel.text = "22";
 
 		me.movesLabel.anchor.setTo(0, 0);
 		me.movesLabel.align = 'center';
@@ -1407,6 +1402,13 @@ Level14.prototype = {
 			font: tFont,
 			fill: "#ff2800"
 		});
+
+		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+		button.scale.setTo(0.8, 0.8);
+
+		function actionOnClick2() {
+			this.game.state.start("GameTitle");
+		}
 	},
 
 	createReplays: function () {
@@ -1427,12 +1429,6 @@ Level14.prototype = {
 		me.playsLabel.align = 'center';
 		me.playsLabel.text = me.replays;
 
-		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-		button.scale.setTo(0.8, 0.8);
-
-		function actionOnClick2() {
-			this.game.state.start("GameTitle");
-		}
 	},
 
 	createSwitch: function () {
@@ -1505,7 +1501,6 @@ Level14.prototype = {
 		me.replays -= 1;
 
 		me.playsLabel.text = me.replays;
-
 		$.post("../ajax.php", {
 			type: 'updatetokens',
 			token: me.replays

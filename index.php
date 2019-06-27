@@ -54,29 +54,29 @@ if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
         <script type="text/javascript" src="js/info.js"></script>
         <script type="text/javascript" src="js/description.js"></script>
         <script type="text/javascript" src="js/nextlevel.js"></script>
-        <script type="text/javascript" src="js/level1.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level2.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level3.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level4.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level5.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level6.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level7.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level8.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level9.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level10.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level11.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level12.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level13.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level14.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level15.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level16.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level17.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level18.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level19.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level20.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level21.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level22.js?v=1.2"></script>
-        <script type="text/javascript" src="js/level23.js?v=1.2"></script>
+        <script type="text/javascript" src="js/level1.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level2.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level3.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level4.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level5.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level6.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level7.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level8.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level9.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level10.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level11.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level12.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level13.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level14.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level15.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level16.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level17.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level18.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level19.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level20.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level21.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level22.js?v=1.3"></script>
+        <script type="text/javascript" src="js/level23.js?v=1.3"></script>
         <script type="text/javascript" src="js/nextlevelstep.js"></script>
         <script type="text/javascript" src="js/counter.js?v=1.3"></script>
         

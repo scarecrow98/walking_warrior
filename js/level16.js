@@ -37,8 +37,8 @@ Level16.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 16;
-			//replays = -1;
+			s = 5;
+			//  replays = -1;
 			me.score = 0;
 			me.moves = 40;
 			me.replays = obj.tokens;
@@ -48,6 +48,7 @@ Level16.prototype = {
 			me.delete = false;
 			me.count = 0;
 			me.lort = false;
+			me.bonuscount = 0;
 			//Keep track of the tiles the user is trying to swap (if any)
 			me.activeTile1 = null;
 			me.activeTile2 = null;
@@ -83,15 +84,14 @@ Level16.prototype = {
 			if (!gameMusic.isPlaying) {
 				gameMusic.play();
 				menuMusic.stop();
-			}	
-
+			}
+	
 			me.initTiles();
 			me.createScore();
 			me.createMoves();
 			me.createReplays();
-			me.createSwitch();
-			me.createDelete();
-			me.text3Label.text = "Match 2 neighbouring bonustiles";
+			//  me.createSwitch();
+			//  me.createDelete();
 		});
 	},
 
@@ -103,8 +103,9 @@ Level16.prototype = {
 	update: function () {
 
 		var me = this;
-		if (me.score >= 6000) {
+		if (me.bonuscount >= 6) {
 			replays = me.replays;
+
 			$.post("../ajax.php", {
 				type: 'minustokens'
 			});
@@ -116,13 +117,12 @@ Level16.prototype = {
 
 			$.post("../ajax.php", {
 				type: 'highestlevel',
-				gamelevel: 14
+				gamelevel: 16
 			});
 
 			this.game.state.start("NextLevel");
 		}
 		if (me.replays <= 0) {
-
 			me.replays = 1;
 
 			$.post("../ajax.php", {
@@ -166,7 +166,7 @@ Level16.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 40;
+			me.moves = 45;
 			me.movesLabel.text = me.moves;
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
@@ -334,21 +334,19 @@ Level16.prototype = {
 
 		//Choose a random tile to add
 		if (type == 0) {
-			if (me.count != 10) {
-				var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
-				me.count += 1;
 
-			}
+			var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
 
-			if (me.count == 10) {
-				var tileToAdd = me.tileTypes[12];
-				me.count += 1;
 
-			}
-			if (me.count == 20) {
-				var tileToAdd = me.tileTypes[13];
-				me.count = 0;
-			}
+			//                    if (me.count==10){
+			//                        var tileToAdd = me.tileTypes[12];
+			//                        me.count+=1;
+			//                        
+			//                    }
+			//                    if (me.count==20){
+			//                        var tileToAdd = me.tileTypes[13];
+			//                        me.count=0;               
+			//                    }
 
 		}
 		if (type == 7) {
@@ -438,7 +436,7 @@ Level16.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Match 2 neighbouring bonustiles";
+		me.text3Label.text = "Make 6 bonustiles " + me.bonuscount + "/6 ";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -472,7 +470,6 @@ Level16.prototype = {
 				me.moves += 3;
 				me.movesLabel.text = me.moves;
 				me.scoreLabel.text = "Score : " + me.score;
-				this.game.state.start("NextLevel");
 				return;
 			}
 
@@ -520,7 +517,6 @@ Level16.prototype = {
 	checkMatch: function () {
 
 		var me = this;
-
 		//Call the getMatches function to check for spots where there is
 		//a run of three or more tiles in a row
 		var matches = me.getMatches(me.tileGrid);
@@ -580,7 +576,7 @@ Level16.prototype = {
 
 				me.moves += 3;
 				me.score += 15;
-
+				// this.game.state.start("NextLevel");
 
 				me.scoreLabel.text = "Score : " + me.score
 				me.lort = false;
@@ -1093,7 +1089,10 @@ Level16.prototype = {
 		//Loop through all the matches and remove the associated tiles
 		for (var i = 0; i < matches.length; i++) {
 			var tempArr = matches[i];
-			if (tempArr.length == 4) { //bonustile part
+			if (tempArr.length == 4) {
+				//bonustile part
+				me.bonuscount++;
+				me.text3Label.text = "Make 6 bonustiles " + me.bonuscount + "/6 ";
 				var ax = -1;
 				var ay = -1;
 				var atilePos1 = me.getTilePos(me.tileGrid, me.activeTile1);
@@ -1325,13 +1324,13 @@ Level16.prototype = {
 		var me = this;
 		var scoreFont = "100px Arial";
 
-		me.scoreLabel = me.game.add.text(950, 1780, "0", {
+		me.scoreLabel = me.game.add.text(850, 1780, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		});
 		me.scoreLabel.anchor.setTo(0, 0);
 		me.scoreLabel.align = 'center';
-		me.scoreLabel.text = "Score:" + me.score;
+		me.scoreLabel.text = "Score: " + me.score;
 	},
 
 	createMoves: function () {
@@ -1339,7 +1338,7 @@ Level16.prototype = {
 		var me = this;
 		var scoreFont = "100px Arial";
 		var textFont = "50px Arial";
-		var tFont = "64px Arial";
+		var tFont = "80px Arial";
 		me.textLabel = me.game.add.text(10, 80, "0", {
 			font: textFont,
 			fill: "#ff2800"
@@ -1349,13 +1348,13 @@ Level16.prototype = {
 			font: scoreFont,
 			fill: "#ff2800"
 		});
-		me.textLabel2 = me.game.add.text(10, 720, "0", {
+		me.textLabel2 = me.game.add.text(10, 420, "0", {
 			font: textFont,
 			fill: "#ff2800"
 		});
 		me.textLabel2.text = "Level:";
 
-		me.levelLabel = game.add.text(10, 760, "0", {
+		me.levelLabel = game.add.text(10, 460, "0", {
 			font: scoreFont,
 			fill: "#ff2800"
 		})
@@ -1399,38 +1398,37 @@ Level16.prototype = {
 	createSwitch: function () {
 
 		var me = this;
-		me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.32, 0.32);
 
 		function switchOnClick() {
 			me.switches = true;
-			me.switch = game.add.button(10, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(1230, 400, 'redswitch', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.32, 0.32);
 
 			function switchOnClick2() {
 				me.switches = false;
-				me.switch = game.add.button(10, 400, 'switch', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(1230, 400, 'switch', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.32, 0.32);
 			}
 		}
-
 
 	},
 
 	createDelete: function () {
 
 		var me = this;
-		me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
+		me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
 		me.switch.scale.setTo(0.12, 0.12);
 
 		function switchOnClick() {
 			me.delete = true;
-			me.switch = game.add.button(10, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
+			me.switch = game.add.button(1230, 550, 'reddelete', switchOnClick2, this, 2, 1, 0);
 			me.switch.scale.setTo(0.192, 0.192);
 
 			function switchOnClick2() {
 				me.delete = false;
-				me.switch = game.add.button(10, 550, 'delete', switchOnClick, this, 2, 1, 0);
+				me.switch = game.add.button(1230, 550, 'delete', switchOnClick, this, 2, 1, 0);
 				me.switch.scale.setTo(0.12, 0.12);
 			}
 		}

@@ -7,10 +7,12 @@ Level12.prototype = {
 	create: function () {
 
 		var me = this;
+
 		$.post("../ajax.php", {
 			type: 'gettokens'
 		}, function (data) {
 			var obj = JSON.parse(data);
+
 			background = game.add.tileSprite(0, 0, 1400, 1920, "background");
 
 			//Declare assets that will be used as tiles
@@ -37,10 +39,10 @@ Level12.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 12;
+			s = 21;
 			//  replays = 3;
 			me.score = 0;
-			me.moves = 40;
+			me.moves = 50;
 			me.replays = obj.tokens;
 			me.wasmove = false;
 			me.firsttime = true;
@@ -90,7 +92,7 @@ Level12.prototype = {
 			me.createMoves();
 			me.createReplays();
 			me.createSwitch();
-			me.text3Label.text = "Reach 300 points";
+			me.text3Label.text = "Reach 500 points";
 			me.createDelete();
 		});
 	},
@@ -103,7 +105,7 @@ Level12.prototype = {
 	update: function () {
 
 		var me = this;
-		if (me.score >= 300) {
+		if (me.score >= 500) {
 			replays = me.replays;
 			$.post("../ajax.php", {
 				type: 'minustokens'
@@ -114,12 +116,10 @@ Level12.prototype = {
 				score: me.score
 			});
 
-
 			$.post("../ajax.php", {
 				type: 'highestlevel',
 				gamelevel: 12
 			});
-
 			this.game.state.start("NextLevel");
 		}
 		if (me.replays <= 0) {
@@ -129,6 +129,7 @@ Level12.prototype = {
 				type: 'updatetokens',
 				token: 1
 			});
+
 
 			this.game.state.start("GameOver");
 		}
@@ -167,7 +168,7 @@ Level12.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 30;
+			me.moves = 35;
 			me.movesLabel.text = me.moves;
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
@@ -335,19 +336,22 @@ Level12.prototype = {
 
 		//Choose a random tile to add
 		if (type == 0) {
+			if (me.count != 10) {
+				var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+				me.count += 1;
 
-			var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+			}
 
 
-			//                    if (me.count==10){
-			//                        var tileToAdd = me.tileTypes[12];
-			//                        me.count+=1;
-			//                        
-			//                    }
-			//                    if (me.count==20){
-			//                        var tileToAdd = me.tileTypes[13];
-			//                        me.count=0;               
-			//                    }
+			if (me.count == 10) {
+				var tileToAdd = me.tileTypes[12];
+				me.count += 1;
+
+			}
+			if (me.count == 20) {
+				var tileToAdd = me.tileTypes[13];
+				me.count = 0;
+			}
 
 		}
 		if (type == 7) {
@@ -437,7 +441,7 @@ Level12.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Reach 300 points";
+		me.text3Label.text = "Reach 500 points";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -1366,6 +1370,12 @@ Level12.prototype = {
 			font: tFont,
 			fill: "#ff2800"
 		});
+		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+		button.scale.setTo(0.8, 0.8);
+
+		function actionOnClick2() {
+			this.game.state.start("GameTitle");
+		}
 	},
 
 	createReplays: function () {
@@ -1386,12 +1396,6 @@ Level12.prototype = {
 		me.playsLabel.align = 'center';
 		me.playsLabel.text = me.replays;
 
-		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-		button.scale.setTo(0.8, 0.8);
-
-		function actionOnClick2() {
-			this.game.state.start("GameTitle");
-		}
 	},
 
 	createSwitch: function () {
@@ -1464,10 +1468,12 @@ Level12.prototype = {
 		me.replays -= 1;
 
 		me.playsLabel.text = me.replays;
+
 		$.post("../ajax.php", {
 			type: 'updatetokens',
 			token: me.replays
 		});
+
 	},
 
 

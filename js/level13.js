@@ -37,19 +37,18 @@ Level13.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 13;
-			// replays = 3;
+			s = 11;
+			//  replays = -1;
 			me.score = 0;
-			me.moves = 30;
+			me.moves = 40;
 			me.replays = obj.tokens;
 			me.wasmove = false;
 			me.firsttime = true;
 			me.switches = false;
 			me.delete = false;
 			me.count = 0;
-			me.fourcount = 0;
-			me.fivecount = 0;
 			me.lort = false;
+			me.bonuscount = 0;
 			//Keep track of the tiles the user is trying to swap (if any)
 			me.activeTile1 = null;
 			me.activeTile2 = null;
@@ -78,15 +77,6 @@ Level13.prototype = {
 			];
 
 			//Create a random data generator to use later
-			smallfive = game.add.button(270, 1800, '5', actionOnClic, this, 2, 1, 0);
-			smallfive.scale.setTo(0.45, 0.45);
-			smallsix = game.add.button(580, 1800, '6', actionOnClic, this, 2, 1, 0);
-			smallsix.scale.setTo(0.45, 0.45);
-
-			function actionOnClic() {
-
-
-			}
 			var seed = Date.now();
 			me.random = new Phaser.RandomDataGenerator([seed]);
 
@@ -102,7 +92,7 @@ Level13.prototype = {
 			me.createReplays();
 			me.createSwitch();
 			me.createDelete();
-			me.text3Label.text = "Match      " + me.fourcount + "/20       " + me.fivecount + "/20";
+			me.text3Label.text = "Make 3 bonustiles " + me.bonuscount + "/3 ";
 		});
 	},
 
@@ -114,7 +104,7 @@ Level13.prototype = {
 	update: function () {
 
 		var me = this;
-		if (me.fourcount >= 20 && me.fivecount >= 20) {
+		if (me.bonuscount >= 3) {
 			replays = me.replays;
 			$.post("../ajax.php", {
 				type: 'minustokens'
@@ -176,7 +166,7 @@ Level13.prototype = {
 			me.firsttime = true;
 
 			me.initTiles();
-			me.moves = 30;
+			me.moves = 40;
 			me.movesLabel.text = me.moves;
 			me.score = 0;
 			me.scoreLabel.text = "Score: " + me.score;
@@ -344,15 +334,18 @@ Level13.prototype = {
 
 		//Choose a random tile to add
 		if (type == 0) {
+			if (me.count != 8) {
+				var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+				me.count += 1;
 
-			var tileToAdd = me.tileTypes[me.random.integerInRange(0, 5)];
+			}
 
 
-			//                    if (me.count==10){
-			//                        var tileToAdd = me.tileTypes[12];
-			//                        me.count+=1;
-			//                        
-			//                    }
+			if (me.count == 8) {
+				var tileToAdd = me.tileTypes[12];
+				me.count = 0;
+
+			}
 			//                    if (me.count==20){
 			//                        var tileToAdd = me.tileTypes[13];
 			//                        me.count=0;               
@@ -446,7 +439,7 @@ Level13.prototype = {
 	swapTiles: function () {
 
 		var me = this;
-		me.text3Label.text = "Match      " + me.fourcount + "/20       " + me.fivecount + "/20";
+		me.text3Label.text = "Make 3 bonustiles " + me.bonuscount + "/3 ";
 		//If there are two active tiles, swap their positions
 		if (me.activeTile1 && me.activeTile2) {
 			if (me.activeTile1.tileType == 14 || me.activeTile2.tileType == 14) { // for nomove
@@ -519,7 +512,6 @@ Level13.prototype = {
 
 			me.activeTile1 = me.tileGrid[t1Index.x][t1Index.y];
 			me.activeTile2 = me.tileGrid[t2Index.x][t2Index.y];
-
 		}
 
 	},
@@ -587,7 +579,7 @@ Level13.prototype = {
 
 				me.moves += 3;
 				me.score += 15;
-				//this.game.state.start("NextLevel");
+				// this.game.state.start("NextLevel");
 
 				me.scoreLabel.text = "Score : " + me.score
 				me.lort = false;
@@ -666,7 +658,7 @@ Level13.prototype = {
 								}
 								//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 								//{
-								//	groups.push(tileGrid[i][j+2]);
+								//  groups.push(tileGrid[i][j+2]);
 								//}
 								me.tiles.remove(me.tileGrid[i][j + 2]);
 								var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -715,7 +707,7 @@ Level13.prototype = {
 							}
 							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 							//{
-							//	groups.push(tileGrid[i][j+2]);
+							//  groups.push(tileGrid[i][j+2]);
 							//}
 							me.tiles.remove(me.tileGrid[i][j + 2]);
 							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -762,7 +754,7 @@ Level13.prototype = {
 							}
 							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 							//{
-							//	groups.push(tileGrid[i][j+2]);
+							//  groups.push(tileGrid[i][j+2]);
 							//}
 							me.tiles.remove(me.tileGrid[i][j + 2]);
 							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -806,7 +798,7 @@ Level13.prototype = {
 							}
 							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 							//{
-							//	groups.push(tileGrid[i][j+2]);
+							//  groups.push(tileGrid[i][j+2]);
 							//}
 							me.tiles.remove(me.tileGrid[i][j + 2]);
 							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -852,7 +844,7 @@ Level13.prototype = {
 							}
 							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 							//{
-							//	groups.push(tileGrid[i][j+2]);
+							//  groups.push(tileGrid[i][j+2]);
 							//}
 							me.tiles.remove(me.tileGrid[i][j + 2]);
 							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -897,7 +889,7 @@ Level13.prototype = {
 							}
 							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 							//{
-							//	groups.push(tileGrid[i][j+2]);
+							//  groups.push(tileGrid[i][j+2]);
 							//}
 							me.tiles.remove(me.tileGrid[i][j + 2]);
 							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -943,7 +935,7 @@ Level13.prototype = {
 								}
 								//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 								//{
-								//	groups.push(tileGrid[i][j+2]);
+								//  groups.push(tileGrid[i][j+2]);
 								//}
 								me.tiles.remove(me.tileGrid[i][j + 2]);
 								var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -989,7 +981,7 @@ Level13.prototype = {
 							}
 							//if (groups.indexOf(tileGrid[i][j+2]) == -1)
 							//{
-							//	groups.push(tileGrid[i][j+2]);
+							//  groups.push(tileGrid[i][j+2]);
 							//}
 							me.tiles.remove(me.tileGrid[i][j + 2]);
 							var tilePos = me.getTilePos(me.tileGrid, me.tileGrid[i][j + 2]);
@@ -1016,7 +1008,7 @@ Level13.prototype = {
 		//me.resetTile();
 		//me.fillTile(0);
 		//setTimeout(function () {
-		//	me.checkMatch();
+		//  me.checkMatch();
 		//}, 500)
 		//console.log("LORT");
 		//return matches;
@@ -1100,7 +1092,10 @@ Level13.prototype = {
 		//Loop through all the matches and remove the associated tiles
 		for (var i = 0; i < matches.length; i++) {
 			var tempArr = matches[i];
-			if (tempArr.length == 4) { //bonustile part
+			if (tempArr.length == 4) {
+				//bonustile part
+				me.bonuscount++;
+				me.text3Label.text = "Make 3 bonustiles " + me.bonuscount + "/3 ";
 				var ax = -1;
 				var ay = -1;
 				var atilePos1 = me.getTilePos(me.tileGrid, me.activeTile1);
@@ -1138,15 +1133,12 @@ Level13.prototype = {
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
-
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
-					me.fourcount++;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
-					me.fivecount++;
 					type = 12;
 				}
 				if (ax != -1 && ay != -1) {
@@ -1202,15 +1194,12 @@ Level13.prototype = {
 					type = 9;
 				}
 				if (tempArr[0].tileType == 4) {
-
 					type = 10;
 				}
 				if (tempArr[0].tileType == 5) {
-					me.fourcount += 2;
 					type = 11;
 				}
 				if (tempArr[0].tileType == 6) {
-					me.fivecount += 2;
 					type = 12;
 				}
 				if (ax != -1 && ay != -1) {
@@ -1228,14 +1217,7 @@ Level13.prototype = {
 			}
 
 			var tile = tempArr[0];
-			if (tempArr[0].tileType == 5) {
-				me.fourcount += 3;
 
-			}
-			if (tempArr[0].tileType == 6) {
-				me.fivecount += 3;
-
-			}
 			var tilePos = me.getTilePos(me.tileGrid, tile);
 			for (var j = 0; j < tempArr.length; j++) {
 
@@ -1408,6 +1390,12 @@ Level13.prototype = {
 		me.playsLabel.align = 'center';
 		me.playsLabel.text = me.replays;
 
+		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
+		button.scale.setTo(0.8, 0.8);
+
+		function actionOnClick2() {
+			this.game.state.start("GameTitle");
+		}
 	},
 
 	createSwitch: function () {
@@ -1428,12 +1416,6 @@ Level13.prototype = {
 			}
 		}
 
-		button = game.add.button(10, 1600, 'backbutton', actionOnClick2, this, 2, 1, 0);
-		button.scale.setTo(0.8, 0.8);
-
-		function actionOnClick2() {
-			this.game.state.start("GameTitle");
-		}
 
 	},
 
@@ -1486,10 +1468,12 @@ Level13.prototype = {
 		me.replays -= 1;
 
 		me.playsLabel.text = me.replays;
+
 		$.post("../ajax.php", {
 			type: 'updatetokens',
 			token: me.replays
 		});
+
 	},
 
 
