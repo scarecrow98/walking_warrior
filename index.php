@@ -31,7 +31,7 @@ if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
 	<script type="text/javascript" src="js/boot.js"></script>
 	<script type="text/javascript" src="js/steps.js"></script>
 	<script type="text/javascript" src="js/preload.js?v=1.1"></script>
-	<script type="text/javascript" src="js/gametitle.js?v=1.6"></script>
+	<script type="text/javascript" src="js/gametitle.js?v=1.7"></script>
 	<script type="text/javascript" src="js/instructions/instruction.js"></script>
 	<script type="text/javascript" src="js/instructions/instruction1.js"></script>
 	<script type="text/javascript" src="js/instructions/instruction2.js"></script>
@@ -50,7 +50,7 @@ if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
     <!-- classes end -->
 
 	<script type="text/javascript" src="js/main.js?v=1.1"></script>
-	<script type="text/javascript" src="js/gameover.js?v=1.2"></script>
+	<script type="text/javascript" src="js/gameover.js?v=1.3"></script>
         <script type="text/javascript" src="js/info.js"></script>
         <script type="text/javascript" src="js/description.js"></script>
         <script type="text/javascript" src="js/nextlevel.js"></script>
@@ -77,7 +77,7 @@ if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
         <script type="text/javascript" src="js/level21.js?v=1.3"></script>
         <script type="text/javascript" src="js/level22.js?v=1.3"></script>
         <script type="text/javascript" src="js/level23.js?v=1.3"></script>
-        <script type="text/javascript" src="js/nextlevelstep.js"></script>
+        <script type="text/javascript" src="js/nextlevelstep.js?v=1.0"></script>
         <script type="text/javascript" src="js/counter.js?v=1.3"></script>
         
     <style type="text/css">

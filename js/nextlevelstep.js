@@ -25,8 +25,8 @@ NextLevelStep.prototype = {
       this.game.add.text(600, 700, steps_label, style);
       var cucc = this.game.add.text(650, 900, stepcount, style2);
 
-      button = game.add.button(460, 1200, 'playbutton', StartCount, this, 2, 1, 0);
-      button.scale.setTo(0.91, 0.91);
+      // button = game.add.button(460, 1200, 'playbutton', StartCount, this, 2, 1, 0);
+      // button.scale.setTo(0.91, 0.91);
 
       game.add.button(1200, 1750, 'backbutton', backToMenu, this, 2, 1, 0);
 
