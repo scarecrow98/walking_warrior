@@ -31,7 +31,7 @@ if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
 	<script type="text/javascript" src="js/boot.js"></script>
 	<script type="text/javascript" src="js/steps.js"></script>
 	<script type="text/javascript" src="js/preload.js?v=1.1"></script>
-	<script type="text/javascript" src="js/gametitle.js?v=1.7"></script>
+	<script type="text/javascript" src="js/gametitle.js?v=1.8"></script>
 	<script type="text/javascript" src="js/instructions/instruction.js"></script>
 	<script type="text/javascript" src="js/instructions/instruction1.js"></script>
 	<script type="text/javascript" src="js/instructions/instruction2.js"></script>

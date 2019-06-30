@@ -13,8 +13,8 @@ Info.prototype = {
         tBuilder.writeLineToPos(450,50,"Select Level")
 
         tBuilder.setTextStyle({font: "60px Acme", fill: "#ffc61e"})
-        tBuilder.writeLineToPos(60, 250, "Practice Levels")
-        tBuilder.writeLineToPos(80, 1000, "Token Levels")
+        // tBuilder.writeLineToPos(60, 250, "Practice Levels")
+        // tBuilder.writeLineToPos(80, 1000, "Token Levels")
 
         bBuilder.createButton(1200, 1750, 'backbutton', function() {
             this.game.state.start("GameTitle")

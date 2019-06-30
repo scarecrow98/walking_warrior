@@ -12,6 +12,7 @@ define('DB_PASSWORD', '');
 define('DB_NAME', 'walkingw_walkingwarrior');
 
 /* Attempt to connect to MySQL database */
+global $link;
 $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
  
 // Check connection

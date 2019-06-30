@@ -727,7 +727,7 @@ Level1.prototype = {
 		//Check for blank spaces in the grid and add new tiles at that position
 		for (var i = 0; i < me.tileGrid.length; i++) {
 
-			for (var j = 0; j < me.tileGrid.length; j++) {
+			for (var j = 0; j < me.tileGrid[0].length; j++) {
 
 				if (me.tileGrid[i][j] == null) {
 					//Found a blank spot so lets add animate a tile there
