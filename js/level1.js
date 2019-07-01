@@ -7,9 +7,9 @@ Level1.prototype = {
 	create: function () {
 
 		var me = this;
+		console.log(me)
 
 		background = game.add.tileSprite(0, 0, 1400, 1920, "background");
-
 		//Declare assets that will be used as tiles
 		me.tileTypes = [
 			'1', //nervecell
@@ -36,9 +36,9 @@ Level1.prototype = {
 		if (typeof replays == 'undefined') {
 			replays = -1;
 		}
-		me.score = 0;
-		me.moves = 25;
-		me.replays = 3;
+		me.score = typeof savedScore != 'undefined' ? savedScore : 0;
+		me.moves = typeof savedMoves != 'undefined' ? savedMoves : 25;
+		me.replays = typeof savedReplays != 'undefined' ? savedReplays : 3;
 		me.wasmove = false;
 		me.firsttime = true;
 		me.switches = false;
@@ -58,6 +58,10 @@ Level1.prototype = {
 		//This will hold all of the tile sprites
 		me.tiles = me.game.add.group();
 
+		//Create a random data generator to use later
+		var seed = Date.now();
+		me.random = new Phaser.RandomDataGenerator([seed]);
+
 		//Initialise tile grid, this array will hold the positions of the tiles
 		//Create whatever shape you'd like
 		me.tileGrid = [
@@ -69,17 +73,29 @@ Level1.prototype = {
 			[null, null, null, null, null, null, null, null, null]
 		];
 
-		//Create a random data generator to use later
-		var seed = Date.now();
-		me.random = new Phaser.RandomDataGenerator([seed]);
-
 		//Set up some initial tiles and the score label
 		if (!gameMusic.isPlaying) {
 			gameMusic.play();
 			menuMusic.stop();
 		}
 
-		me.initTiles();
+		if (typeof savedTileState != 'undefined') {
+			for (var i = 0; i < savedTileState.length; i++) {
+				for (var j = 0; j < savedTileState[0].length; j++) {
+					//Add the tile to the game at this grid position
+					var tile = me.addTile(i, j, savedTileState[i][j], true);
+					//Keep a track of the tiles position in our tileGrid
+					me.tileGrid[i][j] = tile;
+				}
+			}
+
+			me.game.time.events.add(300, function () {
+				me.checkMatch();
+			});
+		} else {
+			me.initTiles();
+		}
+
 		me.createScore();
 		me.createMoves();
 		me.createReplays();
@@ -91,9 +107,48 @@ Level1.prototype = {
 
 		function actionOnClick2() {
 			//title.destroy();
+			this.saveGameState();
 			this.game.state.start("GameTitle");
 		}
 
+	},
+
+	saveGameState: function() {
+		//if the user presses back button, we save the game state so they can continue next time they hit play in the main menu
+		var savedData = {};
+		var tileState = [];
+		for (var i = 0; i < this.tileGrid.length; i++) {
+			var tileColumn = [];
+			for (var j = 0; j < this.tileGrid[i].length; j++) {
+				tileColumn[j] = this.tileGrid[i][j].tileType;
+			}
+			tileState[i] = tileColumn;
+		}
+		savedData['tileState'] = tileState;
+		savedData['level'] = this.getLevel();
+		savedData['score'] = this.score;
+		savedData['moves'] = this.moves;
+		savedData['replays'] = this.replays;
+
+		$.post('save-level.php', {
+			type: 'save-level',
+			data: JSON.stringify(savedData)
+		}, function(data) {
+			console.log(data);
+		});
+
+		this.resetSavedData();
+	},
+
+	getLevel: function() {
+		return parseInt(this.key.substr(5));
+	},
+
+	resetSavedData: function() {
+		if (typeof savedScore != 'undefined') savedScore = undefined;
+		if (typeof savedMoves != 'undefined') savedMoves = undefined;
+		if (typeof savedReplays != 'undefined') savedReplays = undefined;
+		if (typeof tileState != 'undefined') tileState = undefined;
 	},
 
 	nothing: function () {
@@ -219,52 +274,63 @@ Level1.prototype = {
 
 	},
 
-	addTile: function (x, y, type) {
+	addTile: function (x, y, type, addExactType = false) {
 
 		var me = this;
 
-		//Choose a random tile to add
-		if (type == 0) {
-			if (me.count != 10) {
-				var tileToAdd = me.tileTypes[me.random.integerInRange(0, me.tileTypes.length - 9)];
-				// me.count+=1;
+		if (!addExactType) {
 
+			//Choose a random tile to add
+			if (type == 0) {
+				if (me.count != 10) {
+					var tileToAdd = me.tileTypes[me.random.integerInRange(0, me.tileTypes.length - 9)];
+					// me.count+=1;
+					
+				}
+				
+				if (me.count == 10) {
+					var tileToAdd = me.tileTypes[12];
+					// me.count+=1;
+					
+				}
+				if (me.count == 20) {
+					var tileToAdd = me.tileTypes[13];
+					me.count = 0;
+				}
+				
 			}
 
-			if (me.count == 10) {
-				var tileToAdd = me.tileTypes[12];
-				// me.count+=1;
-
+			for (var i = 7; i <= 12; i++) {
+				if (type == i) {
+					var tileToAdd = me.tileTypes[i - 1];
+				} 
 			}
-			if (me.count == 20) {
-				var tileToAdd = me.tileTypes[13];
-				me.count = 0;
-			}
-
-		}
-		if (type == 7) {
-			console.log("7esvolt");
-			var tileToAdd = me.tileTypes[6];
-		}
-		if (type == 8) {
-			console.log("8esvolt");
-			var tileToAdd = me.tileTypes[7];
-		}
-		if (type == 9) {
-			console.log("9esvolt");
-			var tileToAdd = me.tileTypes[8];
-		}
-		if (type == 10) {
-			console.log("10esvolt");
-			var tileToAdd = me.tileTypes[9];
-		}
-		if (type == 11) {
-			console.log("11esvolt");
-			var tileToAdd = me.tileTypes[10];
-		}
-		if (type == 12) {
-			console.log("12esvolt");
-			var tileToAdd = me.tileTypes[11];
+			// if (type == 7) {
+			// 	console.log("7esvolt");
+			// 	var tileToAdd = me.tileTypes[6];
+			// }
+			// if (type == 8) {
+			// 	console.log("8esvolt");
+			// 	var tileToAdd = me.tileTypes[7];
+			// }
+			// if (type == 9) {
+			// 	console.log("9esvolt");
+			// 	var tileToAdd = me.tileTypes[8];
+			// }
+			// if (type == 10) {
+			// 	console.log("10esvolt");
+			// 	var tileToAdd = me.tileTypes[9];
+			// }
+			// if (type == 11) {
+			// 	console.log("11esvolt");
+			// 	var tileToAdd = me.tileTypes[10];
+			// }
+			// if (type == 12) {
+			// 	console.log("12esvolt");
+			// 	var tileToAdd = me.tileTypes[11];
+			// }
+		} else {
+			var tileToAdd = type;
 		}
 
 

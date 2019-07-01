@@ -1,5 +1,7 @@
 var GameTitle = function(game) {};
 
+var levelData = {};
+
 GameTitle.prototype = {
 
     create: function() {
@@ -22,11 +24,21 @@ GameTitle.prototype = {
         //should use month/day/year
         tBuilder.writeLineToPos(1000,1820,"June 30, 2019")
 
-       
-
 
         button = game.add.button(80, 400, 'playbutton', function() {
-            this.startGame();
+            var me = this;
+
+            $.post('save-level.php', {
+                type: 'get-level'
+            }, function(data) {
+                try {
+                    var levelData = JSON.parse(data);
+                    me.startGame(levelData);
+                } catch {
+                    me.game.state.start("Level1");
+                    console.warn("Error querying the server.");
+                }
+            })
         }, this, 2, 1, 0);
         button.scale.setTo(1.2, 1.2);
 
@@ -53,11 +65,13 @@ GameTitle.prototype = {
 
     },
 
-    startGame: function() {
-        //title.stop();
-        replays = 3;
-        this.game.state.start("Level1");
-
+    startGame: function(levelData) {
+        //title.stop();      
+        savedReplays = levelData.replays;
+        savedMoves = levelData.moves;
+        savedTileState = levelData.tileState;
+        savedScore = levelData.score;
+        this.game.state.start("Level" + levelData.level);
     }
 
 }
