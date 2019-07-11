@@ -71,6 +71,7 @@ GameTitle.prototype = {
         savedMoves = levelData.moves;
         savedTileState = levelData.tileState;
         savedScore = levelData.score;
+        savedLevel = levelData.level;
         this.game.state.start("Level" + levelData.level);
     }
 

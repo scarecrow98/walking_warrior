@@ -79,7 +79,7 @@ Level1.prototype = {
 			menuMusic.stop();
 		}
 
-		if (typeof savedTileState != 'undefined') {
+		if (typeof savedTileState != 'undefined' && me.getLevel() == savedLevel) {
 			for (var i = 0; i < savedTileState.length; i++) {
 				for (var j = 0; j < savedTileState[0].length; j++) {
 					//Add the tile to the game at this grid position
@@ -149,6 +149,7 @@ Level1.prototype = {
 		if (typeof savedMoves != 'undefined') savedMoves = undefined;
 		if (typeof savedReplays != 'undefined') savedReplays = undefined;
 		if (typeof tileState != 'undefined') tileState = undefined;
+		if (typeof savedLevel != 'undefined') savedLevel = undefined;
 	},
 
 	nothing: function () {
