@@ -39,7 +39,7 @@ Level21.prototype = {
 			me.tileOffset = 200
 
 			//Keep track of the users score
-			s = 22;
+			s = 21;
 			//  replays = 3;
 			me.score = typeof savedScore != 'undefined' ? savedScore : 0;
 			me.moves = typeof savedMoves != 'undefined' ? savedMoves : 30;
