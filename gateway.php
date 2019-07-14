@@ -4,6 +4,8 @@ require_once 'config.php';
 
 ini_set('display_errors', 1);
 
+define('TEST_MODE', true);
+
 function authenticate_user($db, $username, $password) {
     $sql = "SELECT id, username, password FROM users WHERE username = ?";
         
@@ -27,12 +29,10 @@ function authenticate_user($db, $username, $password) {
                     if(password_verify($password, $hashed_password)){
                         return true;
                     } else{
-                        // Display an error message if password is not valid
                         return false;
                     }
                 }
             } else{
-                // Display an error message if username doesn't exist
                 return false;
             }
         } else{
@@ -41,6 +41,7 @@ function authenticate_user($db, $username, $password) {
     }
 }
 
+//androidos bejelentkezés true vagy false-t küld vissza
 if (!empty($_REQUEST['android-login'])) {
     $username = empty($_REQUEST['username']) ? '' : $_REQUEST['username'];
     $password = empty($_REQUEST['password']) ? '' : $_REQUEST['password'];
@@ -48,20 +49,50 @@ if (!empty($_REQUEST['android-login'])) {
     echo authenticate_user($link, $username, $password) ? 'true' : 'false';
 }
 
+//lépések mentése, token adása
 if (!empty($_REQUEST['update-steps'])) {
+    
     $username = empty($_REQUEST['username']) ? '' : $_REQUEST['username'];
     $password = empty($_REQUEST['password']) ? '' : $_REQUEST['password'];
     $steps = empty($_REQUEST['steps']) ? 0 : $_REQUEST['steps'];
     $steps = intval($steps);
+    $steps_for_one_token = 20;
+
 
     if (authenticate_user($link, $username, $password)) {
-        $tokens = intval($steps / 20);
-        mysqli_query($link,
-        "UPDATE users SET tokens = tokens + $tokens,
-        steps = steps + $steps
-        WHERE username = '$username'");
+        $stmt = mysqli_query($link, "SELECT * FROM users WHERE username = '$username'");
+        $user = mysqli_fetch_assoc($stmt);
+        $steps_left_to_token = $user['steps'] - $user['checkpoint_steps'];
 
-        echo 'tokens: ' . $tokens;
+        if (TEST_MODE) {
+            $tokens = intval($steps / 20);
+            mysqli_query($link, "UPDATE users SET tokens = tokens + $tokens,
+                                steps = steps + $steps
+                                WHERE username = '$username'");
+            echo "You have received $tokens tokens for $steps steps. (TEST MODE)";
+            exit();
+        }
+
+        //ha van tokenje, akkor nem adunk neki ujat a lépésekért, de a lépései eltároljuk
+        if ($user['tokens'] > 0) {
+            mysqli_query($link, "UPDATE users SET steps = steps + $steps WHERE username = '$username'");
+            echo "Your steps are saved. You didn't receive a token because you already have one.";
+            exit();
+        }
+
+        //ha nincs tokenje, de a lépései elegek egy tokenhez, akkor megadjuk neki
+        if ($user['tokens'] == 0 && $steps_left_to_token + $steps >= $steps_for_one_token) {
+            echo "You have received a token.";
+            mysqli_query($link, "UPDATE users SET tokens = 1,  checkpoint_steps = steps + $steps, steps = steps + $steps WHERE username = '$username'");
+            exit();
+        }
+
+        //ha nincs tokenje, de a lépései még nem elegek az új tokenhez, akkor csak mentjük a lépéseket
+        if ($user['tokens'] == 0 && $steps_left_to_token + $steps < $steps_for_one_token) {
+            echo "Your steps are saved but you need to walk another " . ($steps_for_one_token - ($steps + $steps_left_to_token) . " steps to receive a token.");
+            mysqli_query($link, "UPDATE users SET steps = steps + $steps WHERE username = '$username'");
+            exit();
+        }
     } else {
         echo 'Authentication error.';
     }
