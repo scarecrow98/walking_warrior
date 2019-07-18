@@ -50,8 +50,8 @@ Level17.prototype = {
 			me.delete = false;
 			me.count = 0;
 			me.lort = false;
-			me.lortcount = 0;
-			me.bonuscount = 0;
+			me.lortcount = typeof savedCounter1 != 'undefined' ? savedCounter1 : 0;
+			me.bonuscount = typeof savedCounter2 != 'undefined' ? savedCounter2 : 0;
 			//Keep track of the tiles the user is trying to swap (if any)
 			me.activeTile1 = null;
 			me.activeTile2 = null;
@@ -139,6 +139,8 @@ Level17.prototype = {
 		savedData['score'] = this.score;
 		savedData['moves'] = this.moves;
 		savedData['replays'] = this.replays;
+		savedData['counter'] = this.lortcount;
+		savedData['counter2'] = this.bonuscount;
 
 		$.post('save-level.php', {
 			type: 'save-level',
@@ -160,6 +162,9 @@ Level17.prototype = {
 		if (typeof savedReplays != 'undefined') savedReplays = undefined;
 		if (typeof tileState != 'undefined') tileState = undefined;
 		if (typeof savedLevel != 'undefined') savedLevel = undefined;
+		if (typeof savedCounter1 != 'undefined') savedCounter1 = undefined;
+		if (typeof savedCounter2 != 'undefined') savedCounter2 = undefined;
+		if (typeof savedCounter3 != 'undefined') savedCounter3 = undefined;
 	},
 
 	nothing: function () {

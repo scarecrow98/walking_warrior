@@ -20,9 +20,9 @@ GameTitle.prototype = {
         tBuilder.writeLineToPos(50,50,"Walking Warrior")
 
         tBuilder.setTextStyle( {font: "70px Acme",fill: "#ffc61e"} )
-        tBuilder.writeLineToPos(40,1820,"v2.7")
+        tBuilder.writeLineToPos(40,1820,"v2.8")
         //should use month/day/year
-        tBuilder.writeLineToPos(1000,1820,"July 14, 2019")
+        tBuilder.writeLineToPos(1000,1820,"July 19, 2019")
 
 
         button = game.add.button(80, 400, 'playbutton', function() {
@@ -72,6 +72,9 @@ GameTitle.prototype = {
         savedTileState = levelData.tileState;
         savedScore = levelData.score;
         savedLevel = levelData.level;
+        savedCounter1 = levelData.counter1;
+        savedCounter2 = levelData.counter2;
+        savedCounter3 = levelData.counter3;
         this.game.state.start("Level" + levelData.level);
     }
 
