@@ -22,7 +22,7 @@ GameTitle.prototype = {
         tBuilder.setTextStyle( {font: "70px Acme",fill: "#ffc61e"} )
         tBuilder.writeLineToPos(40,1820,"v2.8")
         //should use month/day/year
-        tBuilder.writeLineToPos(1000,1820,"July 19, 2019")
+        tBuilder.writeLineToPos(1000,1820,"July 24, 2019")
 
 
         button = game.add.button(80, 400, 'playbutton', function() {

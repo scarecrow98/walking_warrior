@@ -139,7 +139,18 @@ if(isset($_SESSION["id"]) && $_SESSION['id'] !== "") {
 				//Start the first state
 				game.state.start("Boot");
 
-		})();
+        })();
+        
+        window.onerror = function(msg, url, num) {
+            $.post('error.php', {
+                type: 'errorlog',
+                error: JSON.stringify({
+                    message: msg,
+                    url: url,
+                    line: num
+                })
+            });
+        }
     </script>
 </head>
 <body>
